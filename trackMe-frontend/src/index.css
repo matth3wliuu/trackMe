@@ -175,6 +175,7 @@ body {
   display: grid;
 }
 
+
 /* Add hover effect for class-card */
 .class-term { 
   grid-column: 2;
@@ -188,12 +189,14 @@ body {
 
 .class-term, 
 .class-id, 
-.class-cap { 
+.class-cap,
+.class_grade { 
   font-size: 13px;
 }
 
 .class-id, 
-.class-cap { 
+.class-cap,
+.class_grade { 
   grid-column: 1;
 }
 

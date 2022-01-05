@@ -1,4 +1,7 @@
+import datetime
 from datetime import date
+from src.routes.classRoutes import getClassCap
+from src.Helpers.tutorHelpers import getStartGridPos, getGridColPos
 
 def doAddNewTutor(cursor, db, data):
 
@@ -34,7 +37,8 @@ def getTutorPayrate(cursor, u_id):
 
 
 def getTutorClasses(cursor, tutorId):
-
+    
+    # query returns an array ["class_id", "tutor_id", "subject_id", "grade", "day", "start_time", "duration"]
     query = (
         "SELECT * "
         "FROM classes "
@@ -44,10 +48,33 @@ def getTutorClasses(cursor, tutorId):
     classesData = [ list(classData) for classData in cursor.fetchall() ]
 
     for classData in classesData:
-        classData[5] = str(classData[5])
-        classData[6] = str(classData[6])
+
+        # query returns the subject name in English
+        query = ( 
+            "SELECT subject_name "
+            "FROM subjects "
+            "WHERE subject_id = %(subject_id)s"
+        )
+        subject_id = classData[2]
+        cursor.execute(query, {"subject_id": subject_id})
+        subject_name = cursor.fetchone()[0]
+
+        classCap = getClassCap(cursor, classData[0])
+
+        classData[1] = subject_name
+        classData[2] = classCap
+
+        # Convert weekday string to integer index 
+        classData[4] = getGridColPos(classData[4])
+
+        # convert datetime delta object into an integer as the starting position of the item on grid
+        classData[5] = getStartGridPos(classData[5])
+        
+        # convert decimal object into a float then multiplying by 4 to get duration on grid
+        classData[6] = 4 * float(str(classData[6])) + classData[5]
 
     return classesData
+
 
 def getTutorId(cursor, u_id):
 

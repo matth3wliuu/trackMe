@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import AuthContext from './AuthContext';
-import { tutorIdURL } from '../constants';
+import { tutorIdURL, tutorClassesURL } from '../constants';
 import api from '../api/config';
 
 const DashContext = createContext();
@@ -12,9 +12,10 @@ export const DashProvider = ({ children }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [contentBarItem, setContentBarItem] = useState("schedule");
     const [tutorId, setTutorId] = useState();
+    const [tutorClassesData, setTutorClassesData] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    // Use to axios to fetch the tutorId from the backend 
+    // Using  axios to fetch the tutorId from the backend 
     useEffect( () => {
 
         const fetchTutorId = async () => {
@@ -23,7 +24,6 @@ export const DashProvider = ({ children }) => {
 
             try { 
 
-                console.log(currUser.uid)
                 const res = await api.get(`${tutorIdURL}`, {
                     params: {
                         "u_id": currUser.uid
@@ -46,6 +46,47 @@ export const DashProvider = ({ children }) => {
 
     }, []);
 
+    // using axios to fetch data about the tutor's classes
+    useEffect( () => {
+
+        const fetchTutorClasses = async () => {
+
+            if (!tutorId) return;
+
+            setIsLoading(true);
+
+            try {
+                const res = await api.get(`${tutorClassesURL}`, {
+                    params: {
+                        "tutor_id": tutorId
+                    }
+                });
+
+                setTutorClassesData(res.data["classes"])
+            }
+
+            catch (error) {
+                console.log(error);
+            }
+
+            finally {
+                setIsLoading(false);
+            }
+
+        };
+
+        fetchTutorClasses()
+
+        const cleanUp = () => {
+            setIsLoading(false);
+        }
+
+        return cleanUp;
+
+    }, [tutorId]);
+
+    
+    // Event listener closes the dropdown menu whenever user clicks elsewhere on the screen
     useEffect( () => {
 
         const handleClickOutside = (e) => {
@@ -64,8 +105,11 @@ export const DashProvider = ({ children }) => {
         setDropdownOpen, 
         contentBarItem,
         setContentBarItem,
-        tutorId
+        tutorId, 
+        tutorClassesData
     };
+
+    console.log(tutorClassesData)
 
     return (
 

@@ -32,10 +32,9 @@ def createNewClass(cursor, db, data):
     db.commit()
 
 
-def getClassCap(cursor, termId, classId):
+def getClassCap(cursor, classId):
 
     class_data = { 
-        "term_id": termId, 
         "class_id": classId
     }
     query = (

@@ -1,12 +1,32 @@
-import React from 'react'
+import React, { useContext } from 'react';
 import CalendarLayout from './CalendarLayout';
 import { ClassCell } from './Cells';
-
+import DashContext from '../../contexts/DashContext';
 
 const CalendarGrid = () => {
 
-    const classCode = "MA12-EXT2-MLIU-A";
+    const { tutorClassesData } = useContext(DashContext);
+
     const room = "Maple";
+
+    const gridItems = tutorClassesData && tutorClassesData.map( (tutorClass, idx) => {
+
+        return (
+
+            <ClassCell 
+                key = { `classCell-${idx}`}
+                rowStart = { tutorClass[5] }
+                rowTo = { tutorClass[6] }
+                col = { tutorClass[4] }
+            >
+                <p> { tutorClass[0] } </p>
+                <p> Room: { room } </p>
+
+            </ClassCell>
+        )
+
+    });
+
 
     return (
 
@@ -14,16 +34,7 @@ const CalendarGrid = () => {
 
             <CalendarLayout />
 
-            <ClassCell 
-                key = { "testing" } 
-                rowStart = { 6 }
-                rowTo = { 14 }
-                col = { 7 }
-            > 
-                <p> { classCode } </p>
-                <p> Room: { room } </p>
-
-            </ClassCell>
+            { gridItems } 
 
         </div>
     )
