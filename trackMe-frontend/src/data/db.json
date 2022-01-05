@@ -1,0 +1,19 @@
+{
+    "users": [
+        {
+            "tutor_id": "z5359356",
+            "u_id": "lRjBJR7x9URxXGx4IoUwQGP9Uq92", 
+            "role": "admin", 
+            "name_first": "Matthew", 
+            "name_last": "Liu"
+        }, 
+        {
+            "tutor_id": "z5359356", 
+            "u_id": "dZAfEUsFUGN5SN1tixgYvvw2e0z1", 
+            "role": "tutor",
+            "name_first": "Zac", 
+            "name_last": "Smith"
+        }
+
+    ]
+}
