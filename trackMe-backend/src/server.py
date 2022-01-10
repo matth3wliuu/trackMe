@@ -9,6 +9,7 @@ from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,g
 from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration
 from src.routes.studentRoutes import createNewStudent, deleteStudent
 from src.routes.termRoutes import createNewTermItem, deleteTermItem
+from src.routes.uiRoutes import getCurrentWeek
 
 APP = Flask(__name__)
 CORS(APP)
@@ -40,6 +41,18 @@ def validateCaller(fnc):
             return fnc(*args, **kwargs)
 
     return wrapper
+
+
+# * UI ROUTES ==================================================================
+
+@APP.route("/ui/current_week", methods = ["GET"])
+def weekString():
+
+    """
+    Returns: a string based on the current weekdays 
+    """
+
+    return dumps({"current_week": getCurrentWeek()})
 
 
 # * TUTORS ROUTES ==============================================================

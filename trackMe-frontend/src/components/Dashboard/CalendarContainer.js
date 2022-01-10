@@ -1,64 +1,52 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState ,useEffect } from 'react';
 import CalendarGrid from './CalendarGrid';
-
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+import styled from 'styled-components';
+import { uiDataURL } from '../../constants';
+import api from '../../api/config';
 
 const CalendarContainer = () => {
 
-    // todo need fixing 
-    const getDateRange = () => {
+    const [weekString, setWeekString] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
-        const date = new Date();
+    useEffect(() => {
 
-        let firstDate = date.getDate(); 
-        let lastDate = firstDate; 
+        const fetchWeekString = async () => {
+
+            setIsLoading(true);
+            
+            try {
+                const res = await api.get(`${ uiDataURL }`);
+                setWeekString(res.data["current_week"]);
+            }
+            catch (err) {
+                console.log(err.message)
+            }
+            finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchWeekString()
         
-        let dayIndex1 = date.getDay();
-        let dayIndex2 = dayIndex1;
-
-        let lastDayOfMonth = (new Date(date.getFullYear(), date.getMonth() + 1, 0)).getDate();
-
-        while (dayIndex1 > 1 || dayIndex2 <= 6) {
-
-            if (dayIndex1 > 1 ) { 
-                firstDate -= 1;
-                dayIndex1 -= 1;
-            }
-
-            if (dayIndex2 <= 6) { 
-                lastDate += 1; 
-                dayIndex2 += 1;
-            }
+        const cleanUp = () => {
+            setIsLoading(false);
         }
 
-        let nextMonth = false; 
+        return cleanUp;
 
-        if (lastDate > lastDayOfMonth) {
-            lastDate -= lastDayOfMonth;
-            nextMonth = true;
-        }
-
-        if (nextMonth) { 
-
-            let secondMonth = date.getMonth() + 1 > 11 ? date.getMonth() + 1 - 12 : date.getMonth() + 1;
-            return `${monthNames[date.getMonth()]} ${firstDate} - ${monthNames[secondMonth]} ${lastDate}, ${date.getFullYear()} `;
-        }
-
-        return `${monthNames[date.getMonth()]} ${firstDate} - ${lastDate}, ${date.getFullYear()} `;
-    }
+    }, [])
+    
 
     return (
         
         <div className = "calendar-container">
             
             <div className = "calendar-header"> 
-                <p> { getDateRange() } </p>
+                <p> { weekString } </p>
             </div>
 
-            <CalendarGrid />
+            { !isLoading && <CalendarGrid /> }
        
         </div>
     )
