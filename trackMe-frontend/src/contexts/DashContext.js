@@ -109,8 +109,6 @@ export const DashProvider = ({ children }) => {
         tutorClassesData
     };
 
-    console.log(tutorClassesData)
-
     return (
 
         <DashContext.Provider value = { props }> 

@@ -1,13 +1,24 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
+import styled from 'styled-components';
 import DashContext from '../../contexts/DashContext';
 
+const ContentBarBtn = styled.button.attrs(props => ({
+    isActive: props.isActive
+}))`
+    padding: 10px;
+    font-size: 1rem;
+    border: ${ props => props.isActive ? "1px solid #E2E8F0": "none" };
+    background-color: ${ props => props.isActive ? "#FAF9F6" : "#F1F5F9" };
+    border-radius: ${ props => props.isActive ? "6px 6px 0px 0px" : "0px 0px 0px 0px" };
+    cursor: ${ props => props.isActive ? "pointer" : "default" }; 
+    margin-bottom: ${props => props.isActive ? "-2px" : "0px" };
+    border-bottom: ${ props => props.isActive && "none" };
+`;
+
 const ContentBar = () => {
-    
-    const activeStyle = "border: 1px solid #E2E8F0; border-bottom: none; background-color: #FAF9F6; padding: 10px; border-radius: 6px 6px 0px 0px; margin-bottom: -2px; cursor: pointer;";
-    const defaultStyle = "padding: 10px; border: none; background-color: #f1f5f9;";
 
     const { contentBarItem, setContentBarItem } = useContext(DashContext);
-
+    
     const capitalise = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
@@ -17,29 +28,19 @@ const ContentBar = () => {
         setContentBarItem(e.target.id)
     }
 
-    useEffect( () => {
-
-        const items = ["schedule", "payments"];
-        const filtered = items.filter(item => item !== contentBarItem);
-
-        document.getElementById(contentBarItem).style.cssText = activeStyle;
-        document.getElementById(filtered[0]).style.cssText = defaultStyle;
-
-    }, [contentBarItem]);
-
-
     const ContentBarItem = (props) => {
 
         return (
     
-            <button 
+            <ContentBarBtn
                 id = { props.id }
                 className = "content-bar-item"
                 onClick = { (e) => handleClick(e) }
+                isActive = { contentBarItem === props.id }
             > 
                 { capitalise(props.id) }
     
-            </button>
+            </ContentBarBtn >
                 
         )
     }
