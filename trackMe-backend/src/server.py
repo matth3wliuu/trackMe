@@ -15,6 +15,9 @@ APP = Flask(__name__)
 CORS(APP)
 
 def testDbFn(): 
+
+    myCursor, myDb = dbConnect()
+
     query = (
         "SELECT pay_rates.rate "
         "FROM pay_rates "
@@ -28,16 +31,22 @@ def testDbFn():
     res = myCursor.fetchone()
     print(res[0])
 
+    dbDisconnect(myCursor, myDb)
+
 
 # Decorator to check admin privileges
 def validateCaller(fnc):
 
+    myCursor, myDb = dbConnect()
+
     def wrapper(*args, **kwargs):
 
         if not validateAdmin(myCursor, kwargs["u_id"]):
+            dbDisconnect(myCursor, myDb)
             raise AccessError(description = "tutor does not have admin privileges")
 
         else:
+            dbDisconnect(myCursor, myDb)
             return fnc(*args, **kwargs)
 
     return wrapper
@@ -69,9 +78,8 @@ def tutorsUid(u_id):
         dictionary of list of lists
     """
     res = getTutorsUid(myCursor)
-    myCursor.close()
-    myDb.close()
-
+  
+    dbDisconnect(myCursor, myDb)
     return dumps({"u_ids": res})
 
 
@@ -87,9 +95,8 @@ def tutorsId():
         dictionary of list of lists
     """
     res = getTutorsId(myCursor)
-    myCursor.close()
-    myDb.close()
 
+    dbDisconnect(myCursor, myDb)
     return dumps({"tutor_ids": res})
     
 
@@ -105,9 +112,8 @@ def tutorsEmail():
         dictionary of list of lists
     """
     res = getTutorsEmail(myCursor)
-    myCursor.close()
-    myDb.close()
-
+    
+    dbDisconnect(myCursor, myDb)
     return dumps({"emails": res})
 
 
@@ -147,9 +153,7 @@ def newTutor(u_id):
 
     doAddNewTutor(myCursor, myDb, data)
 
-    myCursor.close()
-    myDb.close()
-
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -161,8 +165,7 @@ def tutorId():
 
     res = getTutorId(myCursor, data["u_id"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({"tutor_id": res})
 
 
@@ -181,8 +184,7 @@ def tutorPayrate():
 
     res = getTutorPayrate(myCursor, data["u_id"])
     
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({"rate": res})
 
 
@@ -200,8 +202,7 @@ def tutorClasses():
 
     res = getTutorClasses(myCursor, data["tutor_id"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({"classes": res})
 
 
@@ -218,8 +219,7 @@ def tutorProfile():
 
     res = getTutorProfile(myCursor, data["tutor_id"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({"profile": res})
 
 
@@ -236,8 +236,7 @@ def tutorUpdatePayrate(u_id):
 
     UpdateTutorPayrate(myCursor, myDb, data["tutor_id"], data["rate_id"])
     
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -255,8 +254,7 @@ def tutorFirstName():
 
     updateTutorFirstName(myCursor, myDb, data["first_name"], data["tutor_id"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -274,8 +272,7 @@ def tutorLastName():
 
     updateTutorLastName(myCursor, myDb, data["last_name"], data["tutor_id"])
     
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -293,8 +290,7 @@ def tutorEmail():
 
     updateTutorEmail(myCursor, myDb, data["email"], data["tutor_id"])
     
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -308,8 +304,7 @@ def classPermission():
 
     res = getClassPermission(myCursor, data["class_id"], data["u_id"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({"permission": res})
 
 
@@ -340,8 +335,7 @@ def classNew(u_id):
 
     createNewClass(myCursor, myDb, data)
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -359,8 +353,7 @@ def classCapacity():
     
     res = getClassCap(myCursor, data["class_id"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({"class_capacity": res})
 
 
@@ -379,8 +372,7 @@ def classRemove():
 
     RemoveClass(myCursor, myDb, data["class_id"])
     
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -398,8 +390,7 @@ def classUpdateTutor(u_id):
 
     updateClassTutor(myCursor, myDb, data["class_id"], data["tutor_id"])
     
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -421,8 +412,7 @@ def classUpdateDay(u_id):
 
     updateClassDay(myCursor, myDb, data["class_id"], data["day"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -442,8 +432,7 @@ def classUpdateTime(u_id):
 
     updateClassStartTime(myCursor, myDb, data["class_id"], data["start_time"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -459,8 +448,7 @@ def classUpdateDuration(u_id):
     
     updateClassDuration(myCursor, myDb, data["class_id"], data["duration"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -490,8 +478,7 @@ def newStudent(u_id):
 
     createNewStudent(myCursor, myDb, data)
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -507,8 +494,7 @@ def removeStudent(u_id):
 
     deleteStudent(myCursor, myDb, data["student_id"])
 
-    myCursor.close()
-    myDb.close()
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
