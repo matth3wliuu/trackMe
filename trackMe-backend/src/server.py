@@ -6,7 +6,7 @@ from src.error import InputError, AccessError
 from src.validate import validateUidLength, validateTutorIdFormat, validateUserNameFormat, validateRateId, validateEmail, validateWeekday, validateTime, validateDuration, validateStudentIdFormat, validateGradeFormat, validateClassExists, validateStudentExists, validateAdmin
 from src.routes.tutorsRoutes import getTutorsUid, getTutorsId, getTutorsEmail
 from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail
-from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration
+from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission
 from src.routes.studentRoutes import createNewStudent, deleteStudent
 from src.routes.termRoutes import createNewTermItem, deleteTermItem
 from src.routes.uiRoutes import getCurrentWeek
@@ -238,6 +238,13 @@ def tutorEmail():
 
 
 # * CLASS ROUTES ===============================================================
+
+@APP.route("/class/permission", methods = ["GET"])
+def classPermission():
+
+    data = request.args
+    return dumps({"permission": getClassPermission(myCursor, data["class_id"], data["u_id"])})
+
 
 @APP.route("/class/add/<u_id>", methods = ["POST"])
 def classNew(u_id):

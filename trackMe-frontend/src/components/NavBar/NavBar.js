@@ -9,11 +9,14 @@ const NavBar = () => {
     const NavBarItem = (props) => {
         
         return ( 
+
             <li 
                 key = { props.k }
                 onClick = { props.handleClick }
             > 
+
                 {props.title}
+
             </li>
         )
     }
@@ -29,7 +32,7 @@ const NavBar = () => {
                 <NavBarItem 
                     k = {1}
                     handleClick = { () => navigate("/") }
-                    title = {"Dashboard"}
+                    title = { "Dashboard" }
                 />
                 
             </ul>

@@ -173,6 +173,12 @@ body {
   box-shadow: 0px 1px 2.5px #888888;
   border-radius: 4px;
   display: grid;
+  cursor: pointer;
+}
+
+.class-card:hover {
+  box-shadow: #888888 0px 10px 20px;
+  transform: translate3d(0px, -1px, 0px);
 }
 
 

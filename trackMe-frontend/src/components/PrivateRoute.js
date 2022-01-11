@@ -3,8 +3,7 @@ import { Navigate } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
 
 export default function PrivateRoute({ children }) {
-    
     const { currUser } = useContext(AuthContext);
-    return currUser ? children : <Navigate to = "/login" />;
+    return currUser.uid ? children : <Navigate to = "/login" />;
 }
 

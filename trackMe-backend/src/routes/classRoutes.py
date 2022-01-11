@@ -114,3 +114,26 @@ def updateClassDuration(cursor, db, classId, newDuration):
     )
     cursor.execute(query, class_data)
     db.commit()
+
+
+def getClassPermission(cursor, classId, uId):
+
+    data = {
+        "class_id": classId, 
+        "u_id": uId
+    }
+    query = (
+        "SELECT class_id "
+        "FROM classes "
+        "WHERE class_id = %(class_id)s "
+        "AND "
+        "tutor_id = ( "
+        "   SELECT tutor_id "
+        "   FROM tutors "
+        "   WHERE u_id = %(u_id)s "
+        ") " 
+    )
+    cursor.execute(query, data)
+    res = cursor.fetchone()
+
+    return None if res is None else res[0]

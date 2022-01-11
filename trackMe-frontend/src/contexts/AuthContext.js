@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
     const [currUser, setCurrUser] = useState(); 
     const [isLoading, setIsLoading] = useState(true);
-    
+
     const login = async (email, password) => {
         return signInWithEmailAndPassword(auth, email, password);
     };

@@ -1,26 +1,34 @@
 import React, { useContext } from "react";
 import DashContext from "../../contexts/DashContext";
+import { useNavigate, Link } from 'react-router-dom';
 import { currTerm } from "../../constants";
 
 const ClassCards = () => {
 
     const { tutorClassesData } = useContext(DashContext);
 
-    const ClassCard = (props) => { 
+    const navigate = useNavigate();
 
+    const handleClick = (e, id) => {
+        e.preventDefault();
+        navigate(`/class/${id}`);
+    }
+
+    const ClassCard = (props) => { 
+ 
         return (
 
-            <li className = "class-card"> 
+            <li className = "class-card" onClick = { props.onClick } > 
                 
                 <p className = "class-subject"> <b> { props.subject } </b>  </p>
                 <p className = "class-term"> <i> { `Term ${props.term}, ${ new Date().getFullYear() }` } </i> </p>
                 <p className = "class-id"> { `Class Code: ${props.id}` } <br /> </p>
                 <p className = "class-cap"> { `Capacity: ${props.cap}` } </p>
                 <p className = "class_grade"> {`Year: ${props.grade}` } </p>
-            
+
             </li>
         )
-    }
+    };
 
     const listItems = tutorClassesData && tutorClassesData.map( (tutorClass) => {
         
@@ -33,6 +41,7 @@ const ClassCards = () => {
                 term = { currTerm }
                 cap = { tutorClass[2] }
                 grade = { tutorClass[3] }
+                onClick = { (e) => handleClick(e, tutorClass[0]) }
             />
         )
     });
