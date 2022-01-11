@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react'; 
 import { Navigate, useParams } from 'react-router-dom';
-import AuthContext from '../contexts/AuthContext';
-import api from '../api/config';
+import AuthContext from '../../contexts/AuthContext';
+import api from '../../api/config';
 
 export default function ClassRoute({ children }) {
 

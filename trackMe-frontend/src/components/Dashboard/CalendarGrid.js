@@ -6,9 +6,6 @@ import DashContext from '../../contexts/DashContext';
 const CalendarGrid = () => {
 
     const { tutorClassesData } = useContext(DashContext);
-
-    const room = "Maple";
-
     const gridItems = tutorClassesData && tutorClassesData.map( (tutorClass, idx) => {
 
         return (
@@ -20,7 +17,7 @@ const CalendarGrid = () => {
                 col = { tutorClass[4] }
             >
                 <p> { tutorClass[0] } </p>
-                <p> Room: { room } </p>
+                <p> Room: { tutorClass[7] } </p>
 
             </ClassCell>
         )

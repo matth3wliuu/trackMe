@@ -86,6 +86,7 @@ def getTutorId(cursor, u_id):
     cursor.execute(query, {"u_id": u_id})
     return cursor.fetchone()
 
+
 def getTutorProfile(cursor, tutorId):
 
     query = (

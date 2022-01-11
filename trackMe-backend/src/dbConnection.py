@@ -21,3 +21,7 @@ def dbConnect():
 
         return None, None
 
+
+def dbDisconnect(cursor, db):
+    cursor.close()
+    db.close()

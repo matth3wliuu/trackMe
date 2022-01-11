@@ -4,8 +4,9 @@ import { Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './components/Login';
 import DashBoard from './components/Dashboard/DashBoard';
-import PrivateRoute from './components/PrivateRoute'; 
-import ClassRoute from './components/ClassRoute';
+import PrivateRoute from './components/SpecialRoutes/PrivateRoute'; 
+import ClassRoute from './components/SpecialRoutes/ClassRoute';
+import ClassPage from './components/ClassPage/ClassPage';
 
 function App() {
   
@@ -20,9 +21,10 @@ function App() {
         <Routes> 
           
           <Route path = "/login" element = { < Login /> } />
-          <Route path = "/" element = { <PrivateRoute> < DashBoard /> </PrivateRoute>  } />
           <Route path = "/admin" element = { <PrivateRoute> </PrivateRoute> } />
-          <Route path = "/class/:class_id" element = { <ClassRoute> </ClassRoute> } />
+          
+          <Route path = "/" element = { <PrivateRoute> < DashBoard /> </PrivateRoute> } />             
+          <Route path = "/class/:class_id" element = { <ClassRoute> <ClassPage /> </ClassRoute> } />
 
         </Routes>
 

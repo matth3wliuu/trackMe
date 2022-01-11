@@ -1,12 +1,12 @@
 from flask import Flask, request
 from json import dumps
 from flask_cors import CORS
-from src.dbConnection import dbConnect
+from src.dbConnection import dbConnect, dbDisconnect
 from src.error import InputError, AccessError
 from src.validate import validateUidLength, validateTutorIdFormat, validateUserNameFormat, validateRateId, validateEmail, validateWeekday, validateTime, validateDuration, validateStudentIdFormat, validateGradeFormat, validateClassExists, validateStudentExists, validateAdmin
 from src.routes.tutorsRoutes import getTutorsUid, getTutorsId, getTutorsEmail
 from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail
-from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission
+from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission, getClassData
 from src.routes.studentRoutes import createNewStudent, deleteStudent
 from src.routes.termRoutes import createNewTermItem, deleteTermItem
 from src.routes.uiRoutes import getCurrentWeek
@@ -60,18 +60,25 @@ def weekString():
 @APP.route("/tutors/uid", methods = ["GET"]) 
 def tutorsUid(u_id):
 
+    myDb, myCursor = dbConnect()
+
     """
     Retrieves the u_id of all tutors (ADMIN ONLY)
 
     Returns:
         dictionary of list of lists
     """
+    res = getTutorsUid(myCursor)
+    myCursor.close()
+    myDb.close()
 
-    return dumps({"u_ids": getTutorsUid(myCursor)})
+    return dumps({"u_ids": res})
 
 
 @APP.route("/tutors/id", methods = ["GET"])
 def tutorsId():
+
+    myDb, myCursor = dbConnect()
 
     """
     Retrieves the tutor_id of all tutors
@@ -79,21 +86,29 @@ def tutorsId():
     Returns:
         dictionary of list of lists
     """
+    res = getTutorsId(myCursor)
+    myCursor.close()
+    myDb.close()
 
-    return dumps({"tutor_ids": getTutorsId(myCursor)})
+    return dumps({"tutor_ids": res})
     
 
 @APP.route("/tutors/email", methods = ["GET"])
 def tutorsEmail():
-    
+
+    myDb, myCursor = dbConnect()
+
     """
     Retrieves the email of all tutors
 
     Returns:
         dictionary of list of lists
     """
+    res = getTutorsEmail(myCursor)
+    myCursor.close()
+    myDb.close()
 
-    return dumps({"emails": getTutorsEmail(myCursor)})
+    return dumps({"emails": res})
 
 
 # * TUTOR ROUTES ===============================================================
@@ -101,6 +116,8 @@ def tutorsEmail():
 @APP.route("/tutor/add/<u_id>", methods = ["POST"])
 @validateCaller
 def newTutor(u_id):
+
+    myDb, myCursor = dbConnect()
 
     """
     Allow an ADMIN to add a new tutor (ADMIN ONLY)
@@ -130,15 +147,23 @@ def newTutor(u_id):
 
     doAddNewTutor(myCursor, myDb, data)
 
+    myCursor.close()
+    myDb.close()
+
     return dumps({})
 
 
 @APP.route("/tutor/tutor_id", methods = ['GET'])
 def tutorId():
 
+    myDb, myCursor = dbConnect()
     data = request.args 
-    print(getTutorId(myCursor, data["u_id"])[0])
-    return dumps({"tutor_id": getTutorId(myCursor, data["u_id"])})
+
+    res = getTutorId(myCursor, data["u_id"])
+
+    myCursor.close()
+    myDb.close()
+    return dumps({"tutor_id": res})
 
 
 @APP.route('/tutor/payrate', methods = ["GET"])
@@ -150,9 +175,15 @@ def tutorPayrate():
     Returns:
         dictionary
     """
-    
+
+    myDb, myCursor = dbConnect()
     data = request.args
-    return dumps({"rate": getTutorPayrate(myCursor, data["u_id"])})
+
+    res = getTutorPayrate(myCursor, data["u_id"])
+    
+    myCursor.close()
+    myDb.close()
+    return dumps({"rate": res})
 
 
 @APP.route("/tutor/classes", methods = ["GET"])
@@ -164,8 +195,14 @@ def tutorClasses():
     Returns: dictionary of list of lists
     """
 
+    myDb, myCursor = dbConnect()
     data = request.args
-    return dumps({"classes": getTutorClasses(myCursor, data["tutor_id"])})
+
+    res = getTutorClasses(myCursor, data["tutor_id"])
+
+    myCursor.close()
+    myDb.close()
+    return dumps({"classes": res})
 
 
 @APP.route("/tutor/profile", methods = ["GET"])
@@ -176,9 +213,14 @@ def tutorProfile():
 
     Returns: dictionary of a list
     """
-
+    myDb, myCursor = dbConnect()
     data = request.args
-    return dumps({"profile": getTutorProfile(myCursor, data["tutor_id"])})
+
+    res = getTutorProfile(myCursor, data["tutor_id"])
+
+    myCursor.close()
+    myDb.close()
+    return dumps({"profile": res})
 
 
 @APP.route("/tutor/update/payrate/<u_id>", methods = ["PUT"])
@@ -189,9 +231,13 @@ def tutorUpdatePayrate(u_id):
 
     Returns: none
     """
-
+    myDb, myCursor = dbConnect()
     data = request.get_json()
+
     UpdateTutorPayrate(myCursor, myDb, data["tutor_id"], data["rate_id"])
+    
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -204,8 +250,13 @@ def tutorFirstName():
     Returns: none
     """
 
+    myDb, myCursor = dbConnect()
     data = request.get_json()
+
     updateTutorFirstName(myCursor, myDb, data["first_name"], data["tutor_id"])
+
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -217,9 +268,14 @@ def tutorLastName():
 
     Returns: none
     """
-    
+
+    myDb, myCursor = dbConnect()
     data = request.get_json()
+
     updateTutorLastName(myCursor, myDb, data["last_name"], data["tutor_id"])
+    
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -232,8 +288,13 @@ def tutorEmail():
     Returns: none
     """
 
+    myDb, myCursor = dbConnect()
     data = request.get_json()
+
     updateTutorEmail(myCursor, myDb, data["email"], data["tutor_id"])
+    
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -242,8 +303,27 @@ def tutorEmail():
 @APP.route("/class/permission", methods = ["GET"])
 def classPermission():
 
+    myDb, myCursor = dbConnect()
     data = request.args
-    return dumps({"permission": getClassPermission(myCursor, data["class_id"], data["u_id"])})
+
+    res = getClassPermission(myCursor, data["class_id"], data["u_id"])
+
+    myCursor.close()
+    myDb.close()
+    return dumps({"permission": res})
+
+
+@APP.route("/class/data", methods = ["GET"])
+def classData():
+
+    myDb, myCursor = dbConnect()
+    data = request.args
+    
+    res = getClassData(myCursor, data["class_id"])
+
+    myCursor.close()
+    myDb.close()
+    return dumps({"class_data": res})
 
 
 @APP.route("/class/add/<u_id>", methods = ["POST"])
@@ -255,8 +335,13 @@ def classNew(u_id):
     Returns: none
     """
 
+    myDb, myCursor = dbConnect()
     data = request.get_json()
+
     createNewClass(myCursor, myDb, data)
+
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -269,8 +354,14 @@ def classCapacity():
     Returns: dictionary of an integer
     """
 
+    myDb, myCursor = dbConnect()
     data = request.args
-    return dumps({"class_capacity": getClassCap(myCursor, data["class_id"])})
+    
+    res = getClassCap(myCursor, data["class_id"])
+
+    myCursor.close()
+    myDb.close()
+    return dumps({"class_capacity": res})
 
 
 # check caller perms
@@ -283,8 +374,13 @@ def classRemove():
     Returns: none
     """
 
+    myDb, myCursor = dbConnect()
     data = request.get_json()
+
     RemoveClass(myCursor, myDb, data["class_id"])
+    
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -297,8 +393,13 @@ def classUpdateTutor(u_id):
     Returns: none
     """
 
+    myDb, myCursor = dbConnect()
     data = request.get_json()
+
     updateClassTutor(myCursor, myDb, data["class_id"], data["tutor_id"])
+    
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -316,7 +417,12 @@ def classUpdateDay(u_id):
     if not validateWeekday(data["day"]):
         raise InputError(description = "weekday is not of correct format")
 
+    myDb, myCursor = dbConnect()
+
     updateClassDay(myCursor, myDb, data["class_id"], data["day"])
+
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -332,7 +438,12 @@ def classUpdateTime(u_id):
     if not validateTime(data["start_time"]):
         raise InputError(description = "start_time is of incorrect format")
 
+    myDb, myCursor = dbConnect()
+
     updateClassStartTime(myCursor, myDb, data["class_id"], data["start_time"])
+
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -344,9 +455,19 @@ def classUpdateDuration(u_id):
     if not validateDuration(data["duration"]):
         raise InputError(description = "duration is of incorrect format")
     
+    myDb, myCursor = dbConnect()
+    
     updateClassDuration(myCursor, myDb, data["class_id"], data["duration"])
+
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
+
+# todo
+@APP.route("/class/room/<u_id>", methods = ["PUT"])
+def classUpdateRoom(u_id):
+    pass
 
 # * STUDENT ROUTES =============================================================
 
@@ -365,7 +486,12 @@ def newStudent(u_id):
     elif not validateGradeFormat(data["grade"]):
         raise InputError(description = "grade is of incorrect format")
 
+    myDb, myCursor = dbConnect()
+
     createNewStudent(myCursor, myDb, data)
+
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -377,7 +503,12 @@ def removeStudent(u_id):
     if not validateStudentIdFormat(data["student_id"]):
         raise InputError(description = "student_id is of incorrect format")
 
+    myDb, myCursor = dbConnect()
+
     deleteStudent(myCursor, myDb, data["student_id"])
+
+    myCursor.close()
+    myDb.close()
     return dumps({})
 
 
@@ -387,13 +518,19 @@ def removeStudent(u_id):
 def newTermItem(u_id):
 
     data = request.get_json()
+    myDb, myCursor = dbConnect()
 
     if not validateStudentExists(myCursor, data["student_id"]):
+        dbDisconnect(myCursor, myDb)
         raise InputError(description = "student does not exist")
+
     elif not validateClassExists(myCursor, data["class_id"]):
+        dbDisconnect(myCursor, myDb)
         raise InputError(description = "class does not exist")
 
     createNewTermItem(myCursor, myDb, data["student_id"], data["class_id"])
+
+    dbDisconnect(myCursor, myDb)
     return dumps({})
 
 
@@ -401,19 +538,23 @@ def newTermItem(u_id):
 def removeTermItem(u_id):
 
     data = request.get_json()
+    myDb, myCursor = dbConnect()
 
     if not validateStudentExists(myCursor, data["student_id"]):
+        dbDisconnect(myCursor, myDb)
         raise InputError(description = "student does not exist")
+
     elif not validateClassExists(myCursor, data["class_id"]):
+        dbDisconnect(myCursor, myDb)
         raise InputError(description = "class does not exist")
     
     deleteTermItem(myCursor, myDb, data["student_id"], data["term_id"])
-    return dumps({})
 
+    dbDisconnect(myCursor, myDb)
+    return dumps({})
 
 
 # ==============================================================================
 
 if __name__ == '__main__':
-    myDb, myCursor = dbConnect()
     APP.run(port = 8080, threaded = True, debug = True)

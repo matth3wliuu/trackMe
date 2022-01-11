@@ -137,3 +137,28 @@ def getClassPermission(cursor, classId, uId):
     res = cursor.fetchone()
 
     return None if res is None else res[0]
+
+
+def getClassData(cursor, classId):
+
+    data = {
+        "class_id": classId 
+    }
+    query = (
+        "SELECT * "
+        "FROM classes "
+        "WHERE classes.class_id = %(class_id)s "
+        "LIMIT 1"
+    )
+    cursor.execute(query, data)
+    res = cursor.fetchone()
+
+    if res is None: 
+        print("here")
+        return res
+
+    res = list(res)
+    res[5] = str(res[5])
+    res[6] = str(res[6])
+
+    return res
