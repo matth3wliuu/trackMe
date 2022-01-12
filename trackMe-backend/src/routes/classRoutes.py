@@ -1,5 +1,6 @@
 from src.Helpers.classHelpers import generateClassId
 from src.constants import classIdRegex
+from datetime import datetime, timedelta
 
 
 def createNewClass(cursor, db, data):
@@ -151,14 +152,33 @@ def getClassData(cursor, classId):
         "LIMIT 1"
     )
     cursor.execute(query, data)
-    res = cursor.fetchone()
+    res = list(cursor.fetchone())
 
-    if res is None: 
-        print("here")
-        return res
+    endTime = res[5] + timedelta(hours = float(res[6]))
 
-    res = list(res)
-    res[5] = str(res[5])
-    res[6] = str(res[6])
+    res[5] = str(res[5]) + " am" if str(res[5]) < "12:00" else " pm"
+    res[6] = str(endTime) 
+    res[6] += " am" if str(endTime) < "12:00" else " pm"
 
     return res
+
+
+def getClassStudents(cursor, classId):
+    
+    data = {
+        "class_id": classId
+    }
+    # make the query get names 
+    query = (
+        "SELECT first_name, last_name "
+        "FROM students "
+        "WHERE student_id IN ( "
+        "   SELECT student_id "
+        "   FROM term "
+        "   WHERE class_id = %(class_id)s "
+        "); "
+    )
+    cursor.execute(query, data)
+    return cursor.fetchall()
+
+

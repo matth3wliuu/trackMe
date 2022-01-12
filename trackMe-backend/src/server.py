@@ -6,7 +6,7 @@ from src.error import InputError, AccessError
 from src.validate import validateUidLength, validateTutorIdFormat, validateUserNameFormat, validateRateId, validateEmail, validateWeekday, validateTime, validateDuration, validateStudentIdFormat, validateGradeFormat, validateClassExists, validateStudentExists, validateAdmin
 from src.routes.tutorsRoutes import getTutorsUid, getTutorsId, getTutorsEmail
 from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail
-from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission, getClassData
+from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission, getClassData, getClassStudents
 from src.routes.studentRoutes import createNewStudent, deleteStudent
 from src.routes.termRoutes import createNewTermItem, deleteTermItem
 from src.routes.uiRoutes import getCurrentWeek
@@ -355,6 +355,18 @@ def classCapacity():
 
     dbDisconnect(myCursor, myDb)
     return dumps({"class_capacity": res})
+
+
+@APP.route("/class/students", methods = ["GET"])
+def classStudents():
+
+    myDb, myCursor = dbConnect()
+    data = request.args
+
+    res = getClassStudents(myCursor, data["class_id"])
+    print(res)
+    dbDisconnect(myCursor, myDb)
+    return dumps({"students": res})
 
 
 # check caller perms
