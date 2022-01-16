@@ -30,3 +30,12 @@ def getTutorsEmail(cursor):
 
     cursor.execute(query)
     return cursor.fetchall()
+
+def getTutorsInfo(cursor):
+
+    query = (
+        "SELECT tutor_id, first_name, last_name "
+        "FROM tutors "
+    )
+    cursor.execute(query)
+    return cursor.fetchall()

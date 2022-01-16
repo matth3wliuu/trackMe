@@ -4,12 +4,13 @@ from flask_cors import CORS
 from src.dbConnection import dbConnect, dbDisconnect
 from src.error import InputError, AccessError
 from src.validate import validateUidLength, validateTutorIdFormat, validateUserNameFormat, validateRateId, validateEmail, validateWeekday, validateTime, validateDuration, validateStudentIdFormat, validateGradeFormat, validateClassExists, validateStudentExists, validateAdmin
-from src.routes.tutorsRoutes import getTutorsUid, getTutorsId, getTutorsEmail
+from src.routes.tutorsRoutes import getTutorsUid, getTutorsId, getTutorsEmail, getTutorsInfo
 from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail
 from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission, getClassData, getClassStudents
 from src.routes.studentRoutes import createNewStudent, deleteStudent
 from src.routes.termRoutes import createNewTermItem, deleteTermItem
 from src.routes.uiRoutes import getCurrentWeek
+from src.routes.requestRoutes import addNewRequest
 
 APP = Flask(__name__)
 CORS(APP)
@@ -103,18 +104,27 @@ def tutorsId():
 @APP.route("/tutors/email", methods = ["GET"])
 def tutorsEmail():
 
-    myDb, myCursor = dbConnect()
-
     """
     Retrieves the email of all tutors
 
     Returns:
         dictionary of list of lists
     """
+
+    myDb, myCursor = dbConnect()
     res = getTutorsEmail(myCursor)
     
     dbDisconnect(myCursor, myDb)
     return dumps({"emails": res})
+
+
+@APP.route("/tutors/info", methods = ["GET"])
+def tutorsInfo():
+    myDb, myCursor = dbConnect()
+
+    res = getTutorsInfo(myCursor)
+    dbDisconnect(myCursor, myDb)
+    return dumps({"tutors_info": res})
 
 
 # * TUTOR ROUTES ===============================================================
@@ -364,7 +374,7 @@ def classStudents():
     data = request.args
 
     res = getClassStudents(myCursor, data["class_id"])
-    print(res)
+
     dbDisconnect(myCursor, myDb)
     return dumps({"students": res})
 
@@ -549,6 +559,21 @@ def removeTermItem(u_id):
     deleteTermItem(myCursor, myDb, data["student_id"], data["term_id"])
 
     dbDisconnect(myCursor, myDb)
+    return dumps({})
+
+
+# * REQUEST ROUTES =============================================================
+
+@APP.route("/request/new", methods = ["POST"])
+def newRequest():
+
+    data = request.get_json()
+    myDb, myCursor = dbConnect()
+    
+    addNewRequest(myDb, myCursor, data)
+
+    dbDisconnect(myCursor, myDb)
+
     return dumps({})
 
 

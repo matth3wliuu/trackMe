@@ -7,6 +7,7 @@ import DashBoard from './components/Dashboard/DashBoard';
 import PrivateRoute from './components/SpecialRoutes/PrivateRoute'; 
 import ClassRoute from './components/SpecialRoutes/ClassRoute';
 import ClassPage from './components/ClassPage/ClassPage';
+import Test from './TEST/Test';
 
 function App() {
   
@@ -25,6 +26,8 @@ function App() {
           
           <Route path = "/" element = { <PrivateRoute> < DashBoard /> </PrivateRoute> } />             
           <Route path = "/class/:class_id" element = { <ClassRoute> <ClassPage /> </ClassRoute> } />
+
+          <Route path = "/test" element = { <Test /> } />
 
         </Routes>
 

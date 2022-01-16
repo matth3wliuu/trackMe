@@ -156,6 +156,17 @@ def getClassData(cursor, classId):
 
     endTime = res[5] + timedelta(hours = float(res[6]))
 
+    data = {
+        "subject_id": res[2]
+    }
+    query = (
+        "SELECT subject_name "
+        "FROM subjects "
+        "WHERE subject_id = %(subject_id)s "
+    )
+    cursor.execute(query, data)
+
+    res[2] = cursor.fetchone()[0]
     res[5] = str(res[5]) + " am" if str(res[5]) < "12:00" else " pm"
     res[6] = str(endTime) 
     res[6] += " am" if str(endTime) < "12:00" else " pm"
@@ -170,7 +181,7 @@ def getClassStudents(cursor, classId):
     }
     # make the query get names 
     query = (
-        "SELECT first_name, last_name "
+        "SELECT student_id, first_name, last_name "
         "FROM students "
         "WHERE student_id IN ( "
         "   SELECT student_id "
