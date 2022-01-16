@@ -13,9 +13,7 @@ export default function ClassRoute({ children }) {
     useEffect( () => {
 
         const fetchPermission = async () => {
-
             try {
-                
                 const res = await api.get("/class/permission", { 
                     params: {
                         "u_id": currUser.uid, 
@@ -28,7 +26,6 @@ export default function ClassRoute({ children }) {
             catch (err) {
                 console.log(err);
             }
-  
         };
 
         fetchPermission();

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import DashContext from "../../contexts/DashContext";
 import axios from 'axios';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
@@ -6,7 +7,6 @@ import api from '../../api/config';
 import StudentTable from './StudentsTable';
 import RequestTable from './RequestTable';
 import Button from '@mui/material/Button';
-import TransferHoursPopup from './TransferHoursPopup';
 import Popup from './Popup';
 
 const ClassPageBody = styled.div`
@@ -56,63 +56,68 @@ const buttonStyle = {
     backgroundColor: "#F1F5F9"
 };
 
+const fetchClassData = (controller, class_id) => {
+    return api.get("/class/data", {
+        params: { "class_id": class_id },
+        signal: controller.signal
+    });
+};
+
+const fetchStudents = (controller, class_id)  => {
+    return api.get("/class/students", { 
+        params: { "class_id": class_id },
+        signal: controller.signal
+    });
+};
+
+const fetchRequests = (controller, tutor_id) => {
+    return api.get("/tutor/requests", {
+        params: { "tutor_id": tutor_id}, 
+        signal: controller.signal
+    });
+};
+
 const ClassPageContent = () => {
     
     const { class_id } = useParams();
+    const { tutorId, isLoading } = useContext(DashContext);
+
     const [classData, setClassData] = useState();
     const [students, setStudents] = useState();
+    const [requests, setRequests] = useState();
+
     const [transferOpen, setTransferOpen] = useState(false);
     const [dropOpen, setDropOpen] = useState(false);
     const [addOpen, setAddOpen] = useState(false);
     const [popupType, setPopupType] = useState();
 
-    useEffect( () => {
-        const controller = new AbortController();
-        const fetchClassData = async () => {
-            try {
-                const res = await api.get("/class/data", { 
-                    params: {
-                        "class_id": class_id
-                    }, 
-                    signal: controller.signal
-                });
-                setClassData(res.data["class_data"]);
-            }
+    useEffect(() => {
 
+        if (!tutorId || !class_id) return;
+        const controller = new AbortController();
+
+        const promises = [ 
+            fetchClassData(controller, class_id), 
+            fetchStudents(controller, class_id),
+            fetchRequests(controller, tutorId)
+        ];
+
+        const fetchData = async () => {
+            try {
+                const res = await Promise.all(promises);
+                setClassData(res[0].data["class_data"]);
+                setStudents(res[1].data["students"]);
+                setRequests(res[2].data["requests"])
+            }
             catch (err) {
-                console.log(err.message);
-            }
+                console.error(err.message);
+            };
         };
 
-        fetchClassData();
-
+        fetchData();
         return () => controller.abort();
 
-    }, [class_id]);
-
-    useEffect( () => { 
-        const controller = new AbortController();
-        const fetchStudents = async () => {
-
-            try {
-                const res = await api.get("/class/students", { 
-                    params: {
-                        "class_id": class_id
-                    },
-                    signal: controller.signal
-
-                });
-                setStudents(res.data["students"])
-            }
-
-            catch(err) {
-                console.log(err.message);
-            }
-        };
-        fetchStudents();
-        return () => controller.abort();
-
-    }, [class_id]);
+    }, [tutorId, class_id]);
 
     return (
 
@@ -130,9 +135,7 @@ const ClassPageContent = () => {
             }
             
             { students && 
-                <StudentsContainer> 
-                    <StudentTable students = { students } /> 
-                </StudentsContainer> 
+                <StudentsContainer> <StudentTable students = { students } /> </StudentsContainer> 
             }
 
             <ClassActions> 
@@ -171,8 +174,10 @@ const ClassPageContent = () => {
                 </Button>
 
             </ClassActions>
-
-            <RequestHistory>  <RequestTable /> </RequestHistory>
+            
+            { requests && 
+                <RequestHistory>  <RequestTable requests = { requests }/> </RequestHistory> 
+            }
 
             <Popup open = { transferOpen } setPopupOpen = { setTransferOpen } popupType = { popupType } />
             <Popup open = { addOpen } setPopupOpen = { setAddOpen } popupType = { popupType } />

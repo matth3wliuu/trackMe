@@ -17,30 +17,22 @@ export const DashProvider = ({ children }) => {
 
     // Using  axios to fetch the tutorId from the backend 
     useEffect( () => {
-
+        
         const fetchTutorId = async () => {
-
             setIsLoading(true);
-
             try { 
-
                 const res = await api.get(`${tutorIdURL}`, {
-                    params: {
-                        "u_id": currUser.uid
-                    }
+                    params: { "u_id": currUser.uid }
                 });
-
                 setTutorId(res.data["tutor_id"][0]);
             }
-
             catch(err) {
                 console.log(err.message);
             }
-
             finally {
                 setIsLoading(false);
-            }
-        }
+            };
+        };
 
         fetchTutorId()
 

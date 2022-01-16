@@ -5,7 +5,7 @@ from src.dbConnection import dbConnect, dbDisconnect
 from src.error import InputError, AccessError
 from src.validate import validateUidLength, validateTutorIdFormat, validateUserNameFormat, validateRateId, validateEmail, validateWeekday, validateTime, validateDuration, validateStudentIdFormat, validateGradeFormat, validateClassExists, validateStudentExists, validateAdmin
 from src.routes.tutorsRoutes import getTutorsUid, getTutorsId, getTutorsEmail, getTutorsInfo
-from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail
+from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail, getTutorRequests
 from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission, getClassData, getClassStudents
 from src.routes.studentRoutes import createNewStudent, deleteStudent
 from src.routes.termRoutes import createNewTermItem, deleteTermItem
@@ -232,6 +232,15 @@ def tutorProfile():
     dbDisconnect(myCursor, myDb)
     return dumps({"profile": res})
 
+@APP.route("/tutor/requests", methods = ["GET"])
+def tutorRequests():
+
+    myDb, myCursor = dbConnect()
+    data = request.args
+    
+    res = getTutorRequests(myCursor, data["tutor_id"])
+    print(res)
+    return dumps({"requests": res})
 
 @APP.route("/tutor/update/payrate/<u_id>", methods = ["PUT"])
 def tutorUpdatePayrate(u_id):
@@ -569,7 +578,7 @@ def newRequest():
 
     data = request.get_json()
     myDb, myCursor = dbConnect()
-    
+
     addNewRequest(myDb, myCursor, data)
 
     dbDisconnect(myCursor, myDb)

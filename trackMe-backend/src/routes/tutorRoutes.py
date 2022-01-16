@@ -159,3 +159,18 @@ def updateTutorEmail(cursor, db, newEmail, tutorId):
     }
     cursor.execute(query, tutor_info)
     db.commit()
+
+def getTutorRequests(cursor, tutorId):
+
+    query = ( 
+        "SELECT request_id, type, date, status from requests "
+        "WHERE requests.tutor_id = %(tutor_id)s"
+    )
+    cursor.execute(query, {"tutor_id": tutorId})
+    res = cursor.fetchall()
+
+    for idx, request in enumerate(res):
+        res[idx] = list(request)
+        res[idx][2] = str(request[2])
+
+    return res

@@ -3,7 +3,6 @@ import NavBar from '../NavBar/NavBar';
 import ClassPageContent from './ClassPageContent';
 import { DashProvider } from '../../contexts/DashContext';
 
-
 const ClassPage = () => {
 
     return (

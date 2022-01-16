@@ -31,7 +31,7 @@ def addNewRequest(db, cursor, data):
         "duration": data["duration"],
         "tutor_id": tutor_id,
         "reason": data["reason"],
-        "status": "processing"
+        "status": "Processing"
     }
 
     query = ( 
