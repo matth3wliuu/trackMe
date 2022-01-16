@@ -11,7 +11,7 @@ Tracking your own hours and the type of work you have done as an employee can be
 2. Capable of supporting more occupations
 
 DEMO ACCOUNT:
-sdublrs@gmail.com
-password
+username: sdublrs@gmail.com 
+password: password
 
 # React, Python (flask) & mySQL
