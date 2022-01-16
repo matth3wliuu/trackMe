@@ -10,5 +10,8 @@ Tracking your own hours and the type of work you have done as an employee can be
 1. Web app capabilities for easy access
 2. Capable of supporting more occupations
 
+DEMO ACCOUNT:
+username: sdublrs@gmail.com 
+password: password
 
 # React, Python (flask) & mySQL
