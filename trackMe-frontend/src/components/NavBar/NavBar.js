@@ -1,25 +1,21 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import Dropdown from './DropDown/Dropdown';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaRegCompass } from 'react-icons/fa'
 const NavBar = () => {
 
     const navigate = useNavigate();
-
     const NavBarItem = (props) => {
-        
         return ( 
-
             <li 
                 key = { props.k }
                 onClick = { props.handleClick }
             > 
-
-                {props.title}
-
+                <FaRegCompass size = "1.25rem" style = { {transform: "translateY(15%)"} }/>
             </li>
-        )
-    }
+        );
+    };
 
     return (
 

@@ -1,6 +1,5 @@
 
 
-
 def addNewRequest(db, cursor, data):
 
     tutor_id = data["tutor"]

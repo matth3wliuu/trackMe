@@ -18,7 +18,7 @@ const StudentsTable = (props) => {
     })
 
     return (
-        <div style = {{ backgroundColor: "white" }}>
+        <div style = { { backgroundColor: "white" } }>
             
             <DataGrid
                 rows = { rows }

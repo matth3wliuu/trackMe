@@ -8,7 +8,7 @@ const ContentBarBtn = styled.button.attrs(props => ({
     padding: 10px;
     font-size: 1rem;
     border: ${ props => props.isActive ? "1px solid #E2E8F0": "none" };
-    background-color: ${ props => props.isActive ? "#FAF9F6" : "#F1F5F9" };
+    background-color: ${ props => props.isActive ? "#FFFFFF" : "#F1F5F9" };
     border-radius: ${ props => props.isActive ? "6px 6px 0px 0px" : "0px 0px 0px 0px" };
     cursor: ${ props => props.isActive ? "pointer" : "default" }; 
     margin-bottom: ${props => props.isActive ? "-2px" : "0px" };

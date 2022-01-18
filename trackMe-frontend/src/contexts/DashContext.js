@@ -5,79 +5,57 @@ import api from '../api/config';
 
 const DashContext = createContext();
 
+const fetchClasses = (controller, u_id) => {
+    return api.get("/tutor/classes", {
+        params: { "u_id": u_id },
+        signal: controller.signal
+    });
+};
+
+const fetchTutorProfile = (controller, u_id) => {
+    return api.get("/tutor/profile", {
+        params: { "u_id": u_id },
+        signal: controller.signal
+    });
+};
+
 export const DashProvider = ({ children }) => {
     
     const { currUser } = useContext(AuthContext)
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [contentBarItem, setContentBarItem] = useState("schedule");
-    const [tutorId, setTutorId] = useState();
-    const [tutorClassesData, setTutorClassesData] = useState();
+
+    const [classData, setClassData] = useState();
+    const [tutorProfile, setTutorProfile] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    // Using  axios to fetch the tutorId from the backend 
-    useEffect( () => {
-        
-        const fetchTutorId = async () => {
-            setIsLoading(true);
-            try { 
-                const res = await api.get(`${tutorIdURL}`, {
-                    params: { "u_id": currUser.uid }
-                });
-                setTutorId(res.data["tutor_id"][0]);
+    useEffect(() => {
+
+        const controller = new AbortController();
+        const promises = [
+            fetchTutorProfile(controller, currUser.uid),
+            fetchClasses(controller, currUser.uid)
+        ];
+
+        const fetchData = async () => {
+            try {
+                const res = await Promise.all(promises);
+                setTutorProfile(res[0].data["profile"]);
+                setClassData(res[1].data["classes"]);
             }
-            catch(err) {
+            catch (err) {
                 console.log(err.message);
             }
             finally {
                 setIsLoading(false);
             };
         };
+        fetchData();
+        return () => controller.abort();
 
-        fetchTutorId()
+    }, [currUser.uid]);
 
-    }, []);
-
-    // using axios to fetch data about the tutor's classes
-    useEffect( () => {
-
-        const fetchTutorClasses = async () => {
-
-            if (!tutorId) return;
-
-            setIsLoading(true);
-
-            try {
-                const res = await api.get(`${tutorClassesURL}`, {
-                    params: {
-                        "tutor_id": tutorId
-                    }
-                });
-
-                setTutorClassesData(res.data["classes"])
-            }
-
-            catch (error) {
-                console.log(error);
-            }
-
-            finally {
-                setIsLoading(false);
-            }
-
-        };
-
-        fetchTutorClasses()
-
-        const cleanUp = () => {
-            setIsLoading(false);
-        }
-
-        return cleanUp;
-
-    }, [tutorId]);
-
-    
     // Event listener closes the dropdown menu whenever user clicks elsewhere on the screen
     useEffect( () => {
 
@@ -85,10 +63,8 @@ export const DashProvider = ({ children }) => {
             e.preventDefault();
             e.target.className !== "dropdown-items" && setDropdownOpen(false);
         };
-        
         window.addEventListener("mousedown", handleClickOutside);
-
-        return () => window.removeEventListener("mousedown", handleClickOutside) ;
+        return () => window.removeEventListener("mousedown", handleClickOutside);
 
     }, []);
 
@@ -97,16 +73,13 @@ export const DashProvider = ({ children }) => {
         setDropdownOpen, 
         contentBarItem,
         setContentBarItem,
-        tutorId, 
-        tutorClassesData
+        tutorProfile, 
+        classData
     };
 
     return (
-
         <DashContext.Provider value = { props }> 
-
             { !isLoading && children }
-
         </DashContext.Provider>
     );
 

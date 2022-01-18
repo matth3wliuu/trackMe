@@ -1,41 +1,37 @@
 import React, { useContext } from 'react'
 import AuthContext from '../../../contexts/AuthContext';
+import DashContext from '../../../contexts/DashContext';
 import { useNavigate } from 'react-router-dom';
+import { Divider } from '@mui/material';
+
+const NewLineText = (inp) => {
+    return inp.split('\n').map(str => <p key = {str}>{str}</p>);
+};
 
 const DropdownMenu = () => {
 
     const navigate = useNavigate();
     const { logout } = useContext(AuthContext);
-
-    const NewLineText = (inp) => {
-        return inp.split('\n').map(str => <p key = {str}>{str}</p>);
-    }
+    const { tutorProfile } = useContext(DashContext);
 
     const handleRedirect = (e, dest) => {
         e.preventDefault();
         navigate(dest);
-    }
+    };
 
     const DropdownItem = (props) => {
-
         return (
-            
             <a  
                 k = { props.k }
                 className = "dropdown-items"
                 onClick = { props.handleClick } 
-                style = { {cursor: props.cursor} }
+                style = { { cursor: props.cursor } }
                 href = { props.href }
             > 
-                
-                {props.title}
+                { props.title }
             </a>
-
-        )
-    }
-
-    const name = "Matthew Liu"; 
-    const id = "z5359356"; 
+        );
+    };
 
     return (
 
@@ -44,11 +40,13 @@ const DropdownMenu = () => {
             <DropdownItem
                 key = { "di1" }
                 k = { "di1" }
-                title = { NewLineText(`${name}\n${id}`) }
+                title = { NewLineText(`${tutorProfile[1]} ${tutorProfile[2]}\n${tutorProfile[0]}`) }
                 href = { "/" }
-                cursor = { "default "}
+                cursor = "default"
             />
             
+            <Divider sx = { { marginBottom: "0.25rem" } }/>
+
             <DropdownItem
                 key = { "di2" }
                 k = { "di2" }

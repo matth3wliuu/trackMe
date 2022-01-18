@@ -8,12 +8,20 @@ import styled from 'styled-components';
 // isRowEdge: boolean
 // isColEdge: boolean
 
+const colours = { 
+    "math": "#DFF5E0",
+    "english": "F5DFDF",
+    "physics": "#DFEFF5",
+    "chemistry": "#EEDFF5",
+    "other": "#B1907F"
+};
+
 const BaseCell = styled.div.attrs(props => ({
     rowStart: props.rowStart,
     rowTo: props.rowTo, 
     col: props.col, 
     isRowEdge: props.isRowEdge,
-    isColEdge: props.isColEdge,
+    isColEdge: props.isColEdge
 }))`
     grid-column: ${ props => props.col };
     grid-row: ${ props => props.rowStart } / ${ props => props.rowTo || props.rowStart };
@@ -22,7 +30,7 @@ const BaseCell = styled.div.attrs(props => ({
     align-items: center;
     align-content: center;
     gap: 6px;
-
+    
     border-top-left-radius: ${ props => props.rowStart === 1 && props.col === 1 ? 6 : 0}px;
     border-top-right-radius: ${ props => props.rowStart === 1 && props.isColEdge ? 6 : 0}px;
     border-bottom-left-radius: ${ props => props.isRowEdge && props.col === 1 ? 6 : 0}px;
@@ -30,30 +38,32 @@ const BaseCell = styled.div.attrs(props => ({
 `;
 
 export const EmptyCell = styled(BaseCell)`
-    border: 1px solid black;
+    border: 1px solid #AEB6BF ;
 `;
 
 const HourCell = styled(BaseCell)`
-    border-bottom: 1px solid black;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
+    border-bottom: 1px solid #AEB6BF ;
+    border-left: 1px solid #AEB6BF ;
+    border-right: 1px solid #AEB6BF ;
 `;
 
 const DayCell = styled(BaseCell)`
-    border-bottom: 1px solid black;
-    border-top: 1px solid black;
-    border-right: 1px solid black;
+    border-bottom: 1px solid #AEB6BF ;
+    border-top: 1px solid #AEB6BF ;
+    border-right: 1px solid #AEB6BF ;
 `;
 
 const GridCell = styled(BaseCell)`
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
+    border-bottom: 1px solid #AEB6BF ;
+    border-right: 1px solid #AEB6BF ;
 `;
 
-export const ClassCell = styled(BaseCell)`
-    background-color: lightgreen;
-    height: 95%;
-    width: 95%;
+export const ClassCell = styled(BaseCell).attrs(props => ({
+    bgColour: props.bgColour
+}))`
+    background-color: ${ props => props.bgColour };
+    height: 97%;
+    width: 97%;
     margin: auto;
     border-radius: 4px;
     z-index: 10;
@@ -62,6 +72,11 @@ export const ClassCell = styled(BaseCell)`
     font-size: 12px;
     display: grid;
     justify-items: center;
+
+    &:hover {
+        box-shadow: 0px 1px 5px #888888;
+        cursor: default;
+    }
 `;
 
 const generateHour = (n) => {
@@ -127,7 +142,7 @@ export const gridCells = hours.map( (_, i) => weekDays.map( (_, j) => {
             isRowEdge = { i === hours.length - 1 }
         /> 
 
-    )
+    );
 
 }));
 

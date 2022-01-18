@@ -80,7 +80,7 @@ const fetchRequests = (controller, tutor_id) => {
 const ClassPageContent = () => {
     
     const { class_id } = useParams();
-    const { tutorId, isLoading } = useContext(DashContext);
+    const { profile } = useContext(DashContext);
 
     const [classData, setClassData] = useState();
     const [students, setStudents] = useState();
@@ -93,13 +93,13 @@ const ClassPageContent = () => {
 
     useEffect(() => {
 
-        if (!tutorId || !class_id) return;
+        if (!profile || !class_id) return;
         const controller = new AbortController();
 
         const promises = [ 
             fetchClassData(controller, class_id), 
             fetchStudents(controller, class_id),
-            fetchRequests(controller, tutorId)
+            fetchRequests(controller, profile[0])
         ];
 
         const fetchData = async () => {
@@ -117,7 +117,7 @@ const ClassPageContent = () => {
         fetchData();
         return () => controller.abort();
 
-    }, [tutorId, class_id]);
+    }, [profile, class_id]);
 
     return (
 

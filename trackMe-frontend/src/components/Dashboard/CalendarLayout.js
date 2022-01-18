@@ -5,17 +5,12 @@ const CalendarLayout = () => {
 
     return (
         <>
-
             <div className = "calendar-layout">
-            
                 <EmptyCell key = { "empty" } rowStart = { 1 } col = { 1 } />
-
                 { hourCells }
                 { dayCells }
                 { gridCells }
-
             </div>
-
         </>
         
     )

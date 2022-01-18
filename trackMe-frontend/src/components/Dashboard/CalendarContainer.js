@@ -34,11 +34,8 @@ const CalendarContainer = () => {
                 setIsLoading(false);
             }
         }
-        fetchWeekString()
-        const cleanUp = () => {
-            setIsLoading(false);
-        }
-        return cleanUp;
+        fetchWeekString();
+        return () => setIsLoading(false);
     }, []);
     
     return (

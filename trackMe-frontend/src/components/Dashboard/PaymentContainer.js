@@ -101,22 +101,13 @@ const PaymentContainer = (props) => {
     const name = "Matthew Liu";
 
     return (
-
         <Container>
-
             <TopBar name = { name } />
-
                 <TermGrid> 
-
-                    { typeCells }
-                    { weekCells }
-                    { gridCells }
-
+                    { typeCells } { weekCells }{ gridCells }
                 </TermGrid>
-
         </Container> 
-
-    )
-}
+    );
+};
 
 export default PaymentContainer;

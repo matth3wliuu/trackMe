@@ -36,15 +36,19 @@ def getTutorPayrate(cursor, u_id):
     return cursor.fetchone()
 
 
-def getTutorClasses(cursor, tutorId):
+def getTutorClasses(cursor, uId):
     
     # query returns an array ["class_id", "tutor_id", "subject_id", "grade", "day", "start_time", "duration"]
     query = (
         "SELECT * "
         "FROM classes "
-        "WHERE classes.tutor_id = %(tutorId)s "
+        "WHERE classes.tutor_id = ( "
+        "   SELECT tutor_id  "
+        "   FROM tutors "
+        "   WHERE u_id = %(u_id)s "
+        ") "
     )
-    cursor.execute(query, {"tutorId": tutorId})
+    cursor.execute(query, {"u_id": uId})
     classesData = [ list(classData) for classData in cursor.fetchall() ]
 
     for classData in classesData:
@@ -87,16 +91,16 @@ def getTutorId(cursor, u_id):
     return cursor.fetchone()
 
 
-def getTutorProfile(cursor, tutorId):
+def getTutorProfile(cursor, uId):
 
     query = (
-        "SELECT first_name, last_name, email, start_date "
+        "SELECT tutor_id, first_name, last_name, rate_id, email, start_date, admin "
         "FROM tutors "
-        "WHERE tutors.tutor_id = %(tutor_id)s " 
+        "WHERE tutors.u_id = %(u_id)s "
     )
-    cursor.execute(query, {"tutor_id": tutorId})
+    cursor.execute(query, {"u_id": uId})
     profile = list(cursor.fetchone())
-    profile[3] = str(profile[3])
+    profile[5] = str(profile[5])
 
     return profile
 

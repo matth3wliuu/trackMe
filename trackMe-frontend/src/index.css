@@ -79,7 +79,7 @@ body {
   display: flex; 
   min-height: 35px;
   align-items: center;
-  background-color: #FAF9F6;
+  background-color: #FFFFFF;
   box-shadow: 0px 1px 5px #888888;
   position: -webkit-sticky;
   gap: 15px;
@@ -92,7 +92,9 @@ body {
 }
 
 .navbar-items { 
-  width:100%;
+  width: max-content;
+  margin-left: 80%;
+  margin-right: 15px;
   list-style: none;
   cursor: pointer;
 }
@@ -100,18 +102,25 @@ body {
 .navbar-items li {
   width: max-content;
   float: right;
+  transition-duration: 0.3s;
 }
 
-.navbar-dropdown:hover,
+/* .navbar-dropdown:hover,
 .navbar-items li:hover { 
   background-color: #fcefcd;
   border-radius: 4px;
   transition: all 0.2s ease-out;
-}
+} */
 
 .navbar-dropdown { 
   list-style: none;
   margin-right: 2%;
+  transition-duration: 0.3s;
+}
+
+.dropdown-icon:hover,
+.navbar-items li:hover {
+  opacity: 65%;
 }
 
 .dropdown {
@@ -121,11 +130,12 @@ body {
   flex-direction: column;
   padding: 0.5rem;
   transform: translateX(-62%);
-  background-color: #FAF9F6;
+  background-color: #FFFFFF;
   box-shadow: 0px 1px 5px #888888;
   border-radius: 4px;
   margin-top: 1vh;
   font-size: 0.9rem;
+  opacity: 100%;
 }
 
 .dropdown-items { 
@@ -136,7 +146,7 @@ body {
 
 .dropdown-items:not([k="di1"]):hover { 
   /* find a nicer color */
-  background-color: white; 
+  background-color: #F1F5F9; 
   border-radius: 4px;
   transition: all 0.2s ease-out;
 }
@@ -169,7 +179,7 @@ body {
   font-size: 12px;
   list-style: none;
   padding: 7px;
-  background-color: #FAF9F6;
+  background-color: #FFFFFF;
   box-shadow: 0px 1px 2.5px #888888;
   border-radius: 4px;
   display: grid;
@@ -210,24 +220,22 @@ body {
   display: flex;
   width: 100vw; 
   min-height: max-content;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #E2E8F0;
   padding-left: 2%;
   align-items: center;
   margin-top: 2rem;
 }
 
-
-
 .content-body {
   /* change after final height in dashboard */
   height: 750px;
   width: 100%;
-  background-color: #FAF9F6;
+  background-color: #FFFFFF;
 }
 
 .calendar-container { 
   width: 96%; 
-  height: calc(max-content);
+  height: calc(min-content);
   margin: auto;
   margin-top: 1rem;
   border: none;

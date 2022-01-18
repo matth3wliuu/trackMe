@@ -210,7 +210,7 @@ def tutorClasses():
     myDb, myCursor = dbConnect()
     data = request.args
 
-    res = getTutorClasses(myCursor, data["tutor_id"])
+    res = getTutorClasses(myCursor, data["u_id"])
 
     dbDisconnect(myCursor, myDb)
     return dumps({"classes": res})
@@ -227,7 +227,7 @@ def tutorProfile():
     myDb, myCursor = dbConnect()
     data = request.args
 
-    res = getTutorProfile(myCursor, data["tutor_id"])
+    res = getTutorProfile(myCursor, data["u_id"])
 
     dbDisconnect(myCursor, myDb)
     return dumps({"profile": res})
