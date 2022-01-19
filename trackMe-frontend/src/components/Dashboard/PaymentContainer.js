@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Divider } from '@mui/material';
+import DashContext from '../../contexts/DashContext';
+import api from '../../api/config';
 
 const Container = styled.div`
     width: 96%;
@@ -64,6 +66,12 @@ const typeCells = workTypes.map( (workType, i) => {
 });
 
 const weeks = ["H1", "H2", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, "H3", "H4"];
+const weeksMap = {
+    "H1": 2,
+    "H2": 3,
+    "H3": weeks.length, 
+    "H4": weeks.length + 1
+}
 const weekCells = weeks.map( (week, idx) => {
     return (
         <BaseCell
@@ -96,15 +104,101 @@ const TopBar = (props) => {
     );
 };
 
+
+
+
 const PaymentContainer = (props) => {
 
-    const name = "Matthew Liu";
+    const term_id = "21t2";
+
+    const { tutorProfile } = useContext(DashContext);
+    const [termPayment, setTermPayment] = useState();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const classCells = termPayment && Object.keys(termPayment["class"]).map( function(k) {
+        const col = k in weeksMap ? weeksMap[k] : parseInt(k) + 3;
+        return (
+            <BaseCell 
+                key = { `payment-class-2-${col}` }
+                row = { 2 }
+                col = { col }
+            > 
+                <p style = { { fontSize: "0.8rem" } }> { termPayment["class"][k] } </p>
+            </BaseCell>
+        );
+    });
+
+    const markingCells = termPayment && Object.keys(termPayment["marking"]).map( function(k) {
+        const col = k in weeksMap ? weeksMap[k] : parseInt(k) + 3;
+        return (
+            <BaseCell 
+                key = { `payment-class-3-${col}` }
+                row = { 3 }
+                col = { col }
+            > 
+                <p style = { { fontSize: "0.8rem" } }> { termPayment["marking"][k] } </p>
+            </BaseCell>
+        );
+    });
+
+    const workshopCells = termPayment && Object.keys(termPayment["workshop"]).map( function(k) {
+        const col = k in weeksMap ? weeksMap[k] : parseInt(k) + 3;
+        return (
+            <BaseCell 
+                key = { `payment-class-4-${col}` }
+                row = { 4 }
+                col = { col }
+            > 
+                <p style = { { fontSize: "0.8rem" } }> { termPayment["workshop"][k] } </p>
+            </BaseCell>
+        );
+    });
+
+    const otherCells = termPayment && Object.keys(termPayment["other"]).map( function(k) {
+        const col = k in weeksMap ? weeksMap[k] : parseInt(k) + 3;
+        return (
+            <BaseCell 
+                key = { `payment-class-5-${col}` }
+                row = { 5 }
+                col = { col }
+            > 
+                <p style = { { fontSize: "0.8rem" } }> { termPayment["other"][k] } </p>
+            </BaseCell>
+        );
+    });
+
+    useEffect(() => {
+        const controller = new AbortController();
+        const fetchData = async () => {
+            setIsLoading(true);
+            try {
+                const res = await api.get("/tutor/payment", {
+                    params: { 
+                        "term_id": term_id,
+                        "tutor_id": tutorProfile[0]
+                    },
+                    signal: controller.signal
+                });
+                setTermPayment(res.data["term_data"]);
+            }
+            catch (err) {
+                console.log(err.message);
+            }
+            finally {
+                setIsLoading(false)
+            };
+        };
+        fetchData();
+        return () => controller.abort();
+    }, [tutorProfile]);
+
 
     return (
         <Container>
-            <TopBar name = { name } />
+            <TopBar name = { `${tutorProfile[1]} ${tutorProfile[2]}` } />
                 <TermGrid> 
-                    { typeCells } { weekCells }{ gridCells }
+                    { typeCells } { weekCells } { gridCells }
+                    { classCells } { markingCells } { workshopCells } { otherCells }
                 </TermGrid>
         </Container> 
     );

@@ -17,9 +17,9 @@ const getColour = (subject) => {
 
 const CalendarGrid = () => {
 
-    const { classData } = useContext(DashContext);
+    const { classesData } = useContext(DashContext);
 
-    const gridItems = classData && classData.map( (tutorClass, idx) => {
+    const gridItems = classesData && classesData.map( (tutorClass, idx) => {
         
         return (
             <ClassCell 

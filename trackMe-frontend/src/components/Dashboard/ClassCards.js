@@ -5,8 +5,8 @@ import { currTerm } from "../../constants";
 
 const ClassCards = () => {
 
-    const { classData } = useContext(DashContext);
-    console.log(classData);
+    const { classesData } = useContext(DashContext);
+
     const navigate = useNavigate();
 
     const handleClick = (e, id) => {
@@ -30,7 +30,7 @@ const ClassCards = () => {
         )
     };
 
-    const listItems = classData && classData.map( (tutorClass) => {
+    const listItems = classesData && classesData.map( (tutorClass) => {
         return (
             <ClassCard 
                 key = { tutorClass[0] }

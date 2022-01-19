@@ -26,7 +26,7 @@ export const DashProvider = ({ children }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [contentBarItem, setContentBarItem] = useState("schedule");
 
-    const [classData, setClassData] = useState();
+    const [classesData, setClassesData] = useState();
     const [tutorProfile, setTutorProfile] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -42,7 +42,7 @@ export const DashProvider = ({ children }) => {
             try {
                 const res = await Promise.all(promises);
                 setTutorProfile(res[0].data["profile"]);
-                setClassData(res[1].data["classes"]);
+                setClassesData(res[1].data["classes"]);
             }
             catch (err) {
                 console.log(err.message);
@@ -74,7 +74,7 @@ export const DashProvider = ({ children }) => {
         contentBarItem,
         setContentBarItem,
         tutorProfile, 
-        classData
+        classesData,
     };
 
     return (

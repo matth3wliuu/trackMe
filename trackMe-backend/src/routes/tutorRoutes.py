@@ -178,3 +178,91 @@ def getTutorRequests(cursor, tutorId):
         res[idx][2] = str(request[2])
 
     return res
+
+
+def checkCurrentTerm(cursor, termId, tutorId):
+
+    query = ( 
+        "SELECT * "
+        "FROM roster "
+        "WHERE tutor_id = %(tutor_id)s "
+        "AND term_id = %(term_id)s "
+    )
+    cursor.execute(query, { "tutor_id": tutorId, "term_id": termId } )
+    return cursor.fetchone() != None
+
+def createTermJSON(db, cursor, termId, tutorId, dumps):
+
+    newJSON = dumps({
+        "class": { }, 
+        "marking": { },
+        "workshop": { },
+        "other": { } 
+    })
+
+    query = ( 
+        "INSERT into roster "
+        "VALUES ( %(tutor_id)s, %(term_id)s, %(term_data)s ) "
+    )
+    data = {
+        "tutor_id": tutorId, 
+        "term_id": termId, 
+        "term_data": newJSON 
+    }
+    cursor.execute(query, data)
+    db.commit()
+
+
+def getTermJSON(db, cursor, termId, tutorId, loads):
+
+    query = ( 
+        "SELECT term_data "
+        "FROM roster "
+        "WHERE term_id = %(term_id)s "
+        "AND tutor_id = %(tutor_id)s "
+    )
+    queryData = {
+        "term_id": termId, 
+        "tutor_id": tutorId
+    }
+    cursor.execute(query, queryData)
+
+    return loads(cursor.fetchone()[0])
+
+
+def modifyTermJson(db, cursor, data, dumps, loads):
+
+    query = (
+        "SELECT term_data "
+        "FROM roster "
+        "WHERE term_id = %(term_id)s "
+        "AND tutor_id = %(tutor_id)s "
+    )
+    queryData = {
+        "term_id": data["term_id"],
+        "tutor_id": data["tutor_id"]
+    }
+    cursor.execute(query, queryData)
+    jsonData = cursor.fetchone()
+    d = loads(jsonData)
+
+    week = data["week"]
+    newValue = data["hours"]
+    work_type = data["work_type"]
+
+    d[work_type][week] = newValue
+
+    query = ( 
+        "UPDATE roster "
+        "SET term_data = %(term_data)s "
+        "WHERE term_id = %(term_id)s "
+        "AND tutor_id = %(tutor_id)s "
+    )
+    queryData = { 
+        "term_data": dumps(d),
+        "term_id": data["term_id"],
+        "tutor_id": data["tutor_id"]
+    }
+    cursor.execute(query, queryData)
+    db.commit()
+

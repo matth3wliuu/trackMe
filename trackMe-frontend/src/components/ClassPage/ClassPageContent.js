@@ -8,6 +8,7 @@ import StudentTable from './StudentsTable';
 import RequestTable from './RequestTable';
 import Button from '@mui/material/Button';
 import Popup from './Popup';
+import { Divider } from '@mui/material'
 
 const ClassPageBody = styled.div`
     display: grid;
@@ -22,12 +23,12 @@ const ClassPageBody = styled.div`
     column-gap: 3%;
 `;
 
-const ClassInfo = styled.div`
+const ClassInfoContainer = styled.div`
     min-width: 380px;
     height: 165px;
     font-size: 12px;
     padding: 12px;
-    background-color: #FAF9F6;
+    background-color: white;
     box-shadow: 0px 1px 2.5px #888888;
     border-radius: 4px;
     display: grid;
@@ -35,13 +36,13 @@ const ClassInfo = styled.div`
     line-height: 1.25rem;
 `;
 
-const ClassActions = styled(ClassInfo)`
+const ClassActions = styled(ClassInfoContainer)`
     grid-column: 2;
     grid-row: 1;
     row-gap: 12px;
 `;
 
-const StudentsContainer = styled(ClassInfo)`
+const StudentsContainer = styled(ClassInfoContainer)`
     height: 60vh;
 `;
 
@@ -54,6 +55,21 @@ const buttonStyle = {
     width: "max-content",
     color: "black", 
     backgroundColor: "#F1F5F9"
+};
+
+const ClassInfo = (props) => {
+    const { classData } = props;
+    return (
+        <>
+            <p style = { { "fontSize": "18px" } }> <b> { classData[0] } </b> </p> 
+            <Divider sx = { { marginBottom: "10px" } }/>
+            <p> <b> Subject: </b> { classData[2] } </p>
+            <p> <b> Year: </b> { classData[3] } </p>
+            <p> <b> Day: </b> { classData[4] } </p>
+            <p> <b> Time: </b> { classData[5] } - { classData[6] } </p>
+            <p> <b> Room: </b> { classData[7] } </p> 
+        </>
+    );
 };
 
 const fetchClassData = (controller, class_id) => {
@@ -80,7 +96,7 @@ const fetchRequests = (controller, tutor_id) => {
 const ClassPageContent = () => {
     
     const { class_id } = useParams();
-    const { profile } = useContext(DashContext);
+    const { tutorProfile } = useContext(DashContext);
 
     const [classData, setClassData] = useState();
     const [students, setStudents] = useState();
@@ -93,13 +109,14 @@ const ClassPageContent = () => {
 
     useEffect(() => {
 
-        if (!profile || !class_id) return;
+        if (!tutorProfile || !class_id) return;
+
         const controller = new AbortController();
 
         const promises = [ 
             fetchClassData(controller, class_id), 
             fetchStudents(controller, class_id),
-            fetchRequests(controller, profile[0])
+            fetchRequests(controller, tutorProfile[0])
         ];
 
         const fetchData = async () => {
@@ -117,25 +134,22 @@ const ClassPageContent = () => {
         fetchData();
         return () => controller.abort();
 
-    }, [profile, class_id]);
+    }, [tutorProfile, class_id]);
 
     return (
 
         <ClassPageBody> 
 
             { classData && 
-                <ClassInfo>
-                    <p style = { { "fontSize": "18px" } }> <b> { classData[0] } </b> </p> <br />
-                    <p> <b> Subject: </b> { classData[2] } </p>
-                    <p> <b> Year: </b> { classData[3] } </p>
-                    <p> <b> Day: </b> { classData[4] } </p>
-                    <p> <b> Time: </b> { classData[5] } - { classData[6] } </p>
-                    <p> <b> Room: </b> { classData[7] } </p> 
-                </ClassInfo> 
+                <ClassInfoContainer>
+                    <ClassInfo classData = { classData } />
+                </ClassInfoContainer> 
             }
             
             { students && 
-                <StudentsContainer> <StudentTable students = { students } /> </StudentsContainer> 
+                <StudentsContainer> 
+                    <StudentTable students = { students } /> 
+                </StudentsContainer> 
             }
 
             <ClassActions> 

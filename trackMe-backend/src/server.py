@@ -1,16 +1,17 @@
-from flask import Flask, request
-from json import dumps
+from flask import Flask, request, jsonify
+from json import dumps, loads
 from flask_cors import CORS
 from src.dbConnection import dbConnect, dbDisconnect
 from src.error import InputError, AccessError
 from src.validate import validateUidLength, validateTutorIdFormat, validateUserNameFormat, validateRateId, validateEmail, validateWeekday, validateTime, validateDuration, validateStudentIdFormat, validateGradeFormat, validateClassExists, validateStudentExists, validateAdmin
 from src.routes.tutorsRoutes import getTutorsUid, getTutorsId, getTutorsEmail, getTutorsInfo
-from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail, getTutorRequests
+from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail, getTutorRequests, checkCurrentTerm, createTermJSON, modifyTermJson, getTermJSON
 from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission, getClassData, getClassStudents
 from src.routes.studentRoutes import createNewStudent, deleteStudent
 from src.routes.termRoutes import createNewTermItem, deleteTermItem
 from src.routes.uiRoutes import getCurrentWeek
 from src.routes.requestRoutes import addNewRequest
+
 
 APP = Flask(__name__)
 CORS(APP)
@@ -232,6 +233,7 @@ def tutorProfile():
     dbDisconnect(myCursor, myDb)
     return dumps({"profile": res})
 
+
 @APP.route("/tutor/requests", methods = ["GET"])
 def tutorRequests():
 
@@ -241,6 +243,7 @@ def tutorRequests():
     res = getTutorRequests(myCursor, data["tutor_id"])
     print(res)
     return dumps({"requests": res})
+
 
 @APP.route("/tutor/update/payrate/<u_id>", methods = ["PUT"])
 def tutorUpdatePayrate(u_id):
@@ -313,6 +316,36 @@ def tutorEmail():
     return dumps({})
 
 
+@APP.route("/tutor/payment", methods = ["GET"])
+def tutorPayment():
+
+    myDb, myCursor = dbConnect()
+    data = request.args 
+
+    inSystem = checkCurrentTerm(myCursor, data["term_id"], data["tutor_id"])
+    if not inSystem:
+        createTermJSON(myDb, myCursor, data["term_id"], data["tutor_id"], dumps)
+
+    res = getTermJSON(myDb, myCursor, data["term_id"], data["tutor_id"], loads)
+
+    dbDisconnect(myCursor, myDb)
+    return dumps({"term_data": res})
+
+
+@APP.route("/tutor/payment/modify", methods = ["PUT"])
+def modifyTutorPayment():
+    
+    myDb, myCursor = dbConnect()
+    data = request.get_json()
+
+    inSystem = checkCurrentTerm(myCursor, data["term_id"], data["tutor_id"])
+    if inSystem:
+        modifyTermJson(myDb, myCursor, data, dumps, loads)
+
+    dbDisconnect(myCursor, myDb)
+    return dumps({})
+
+
 # * CLASS ROUTES ===============================================================
 
 @APP.route("/class/permission", methods = ["GET"])
@@ -334,7 +367,7 @@ def classData():
     data = request.args
     
     res = getClassData(myCursor, data["class_id"])
-
+    print(res)
     myCursor.close()
     myDb.close()
     return dumps({"class_data": res})
