@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from functools import wraps
 from json import dumps, loads
 from flask_cors import CORS
 from src.dbConnection import dbConnect, dbDisconnect
@@ -39,17 +40,19 @@ def testDbFn():
 # Decorator to check admin privileges
 def validateCaller(fnc):
 
-    myCursor, myDb = dbConnect()
-
+    @wraps(fnc)
     def wrapper(*args, **kwargs):
 
+        myDb, myCursor = dbConnect()
+        res = None 
+
         if not validateAdmin(myCursor, kwargs["u_id"]):
-            dbDisconnect(myCursor, myDb)
             raise AccessError(description = "tutor does not have admin privileges")
 
-        else:
-            dbDisconnect(myCursor, myDb)
-            return fnc(*args, **kwargs)
+        res = fnc(*args, **kwargs)
+
+        dbDisconnect(myCursor, myDb)
+        return res
 
     return wrapper
 
@@ -345,6 +348,10 @@ def modifyTutorPayment():
     dbDisconnect(myCursor, myDb)
     return dumps({})
 
+@APP.route("/tutor/admin/<u_id>", methods = ["GET"])
+@validateCaller
+def checkTutorAdmin(u_id):
+    return dumps({})
 
 # * CLASS ROUTES ===============================================================
 

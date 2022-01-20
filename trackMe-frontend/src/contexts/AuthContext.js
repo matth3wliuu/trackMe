@@ -25,26 +25,19 @@ export const AuthProvider = ({ children }) => {
     }; 
     
     useEffect( () => {
-        
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrUser(user); 
             setIsLoading(false);
         }); 
-
         return unsubscribe;
-        
     }, []);
 
     return (
-
        <AuthContext.Provider value = { props }> 
-
         { !isLoading && children }
-           
        </AuthContext.Provider>
-
     );
-}
+};
 
 export default AuthContext;
 

@@ -56,16 +56,13 @@ def validateStudentExists(cursor, studentId):
 
 
 def validateAdmin(cursor, u_id):
-    
+
     query = (
         "SELECT admin "
         "FROM tutors "
         "WHERE tutors.u_id = %(u_id)s "
     )
-    cursor.execute(query, {"u_id": u_id})
+    cursor.execute(query, { "u_id": u_id })
     return cursor.fetchone()[0]
 
 
-
-
-    return wrapper

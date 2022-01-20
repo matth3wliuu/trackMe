@@ -105,8 +105,6 @@ const TopBar = (props) => {
 };
 
 
-
-
 const PaymentContainer = (props) => {
 
     const term_id = "21t2";
@@ -191,7 +189,6 @@ const PaymentContainer = (props) => {
         fetchData();
         return () => controller.abort();
     }, [tutorProfile]);
-
 
     return (
         <Container>

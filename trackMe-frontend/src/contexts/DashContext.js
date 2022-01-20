@@ -21,7 +21,7 @@ const fetchTutorProfile = (controller, u_id) => {
 
 export const DashProvider = ({ children }) => {
     
-    const { currUser } = useContext(AuthContext)
+    const { currUser } = useContext(AuthContext);
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [contentBarItem, setContentBarItem] = useState("schedule");
