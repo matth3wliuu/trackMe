@@ -6,7 +6,8 @@ def generateClassId(classIds, firstName, lastName, subjectId):
     classId = f"{subjectId}-{initials}-A"
 
     suffix = ord("B")
-    while [classId] in classIds:
+
+    while classId in classIds:
         classId = classId[0: -1] + chr(suffix)
         suffix += 1
     

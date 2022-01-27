@@ -73,7 +73,7 @@ const AddClassPU = ( props ) => {
 
     const roomsList = adminRooms.map( adminRoom => {
         return (
-            <MenuItem key = { `add-class-room-${adminRoom[0]}`} value = { adminRoom[0] }> 
+            <MenuItem key = { `add-class-room-${adminRoom[0]}`} value = { adminRoom[1] }> 
                 { adminRoom[1] }
             </MenuItem>
         );
@@ -139,7 +139,7 @@ const AddClassPU = ( props ) => {
                                 margin = "dense"
                                 fullWidth 
                             >
-                                
+
                                 { tutorIdList }
 
                             </TextField> 

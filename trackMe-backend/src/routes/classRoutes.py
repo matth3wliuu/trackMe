@@ -12,7 +12,7 @@ def createNewClass(cursor, db, data):
         "WHERE class_id REGEXP %(regexp)s "
     )
     cursor.execute(query, {"regexp": classIdRegex(data["subject_id"])})
-    class_ids = cursor.fetchall()
+    class_ids = list(cursor.fetchall()[0])
 
     class_id = generateClassId(class_ids, data["first_name"], data["last_name"], data["subject_id"])
 

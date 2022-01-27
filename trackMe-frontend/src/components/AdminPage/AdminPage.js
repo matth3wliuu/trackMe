@@ -130,8 +130,6 @@ const fetchRooms = (controller, uId) => {
 
 
 const AdminPage = () => {
-
-    document.title = "Admin Page";
     
     const { currUser } = useContext(AuthContext);
 
@@ -222,7 +220,7 @@ const AdminPage = () => {
                                 setPopupOpen = { setPopupOpen }
                             /> 
                         } 
-                        
+
                         { section === "tutors" && <AdminTutors /> }
                         { section === "requests" && <AdminRequests /> }
 
