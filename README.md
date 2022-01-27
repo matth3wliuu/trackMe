@@ -2,7 +2,7 @@
 
 
 ![image](demo-front-page.png)
-Dashboard demo of trackMe
+Demo of the trackMe Dashboard
 
 
 
