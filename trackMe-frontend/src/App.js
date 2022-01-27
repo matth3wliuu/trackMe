@@ -24,8 +24,10 @@ function App() {
         <Routes> 
           
           <Route path = "/login" element = { < Login /> } />
-          <Route path = "/admin" element = { <PrivateRoute> <AdminRoute> <AdminPage /> </AdminRoute></PrivateRoute> } />
+          <Route path = "/admin" element = { <PrivateRoute> <AdminRoute> <AdminPage /> </AdminRoute> </PrivateRoute> } />
           
+          {/* <Route path = "/profile/:u_id" element = { } />  */}
+
           <Route path = "/" element = { <PrivateRoute> < DashBoard /> </PrivateRoute> } />             
           <Route path = "/class/:class_id" element = { <PrivateRoute> <ClassRoute> <ClassPage /> </ClassRoute> </PrivateRoute> } />
 
@@ -40,6 +42,7 @@ function App() {
     </div>
 
   );
+
 }
 
 export default App;

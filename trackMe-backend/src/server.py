@@ -5,13 +5,14 @@ from flask_cors import CORS
 from src.dbConnection import dbConnect, dbDisconnect
 from src.error import InputError, AccessError
 from src.validate import validateUidLength, validateTutorIdFormat, validateUserNameFormat, validateRateId, validateEmail, validateWeekday, validateTime, validateDuration, validateStudentIdFormat, validateGradeFormat, validateClassExists, validateStudentExists, validateAdmin
-from src.routes.tutorsRoutes import getTutorsUid, getTutorsId, getTutorsEmail, getTutorsInfo
+from src.routes.tutorsRoutes import getTutorsInfo
 from src.routes.tutorRoutes import doAddNewTutor, getTutorPayrate, getTutorId ,getTutorClasses, getTutorProfile, UpdateTutorPayrate, updateTutorFirstName, updateTutorLastName, updateTutorEmail, getTutorRequests, checkCurrentTerm, createTermJSON, modifyTermJson, getTermJSON
 from src.routes.classRoutes import createNewClass, getClassCap, RemoveClass, updateClassStartTime, updateClassTutor, updateClassDay, updateClassDuration, getClassPermission, getClassData, getClassStudents
 from src.routes.studentRoutes import createNewStudent, deleteStudent
 from src.routes.termRoutes import createNewTermItem, deleteTermItem
 from src.routes.uiRoutes import getCurrentWeek
 from src.routes.requestRoutes import addNewRequest
+from src.routes.adminRoutes import getAllClasses, getAllTutors, getAllRequests, getAllSubjects, getAllRooms
 
 
 APP = Flask(__name__)
@@ -50,7 +51,7 @@ def validateCaller(fnc):
             raise AccessError(description = "tutor does not have admin privileges")
 
         res = fnc(*args, **kwargs)
-
+ 
         dbDisconnect(myCursor, myDb)
         return res
 
@@ -69,58 +70,62 @@ def weekString():
     return dumps({"current_week": getCurrentWeek()})
 
 
+# * ADMIN RUOUTES ==============================================================
+
+@APP.route("/admin/classes/<u_id>", methods = ["GET"])
+@validateCaller
+def allClasses(u_id):
+
+    myDb, myCursor = dbConnect()
+    res = getAllClasses(myCursor)
+
+    dbDisconnect(myCursor, myDb)
+    return dumps({"classes": res})
+
+
+@APP.route("/admin/tutors/<u_id>", methods = ["GET"])
+@validateCaller
+def allTutors(u_id):
+
+    myDb, myCursor = dbConnect()
+    res = getAllTutors(myCursor)
+
+    dbDisconnect(myCursor, myDb)
+    return dumps({"tutors": res})
+
+
+@APP.route("/admin/requests/<u_id>", methods = ["GET"])
+@validateCaller
+def AllRequests(u_id):
+    
+    myDb, myCursor = dbConnect()
+    res = getAllRequests(myCursor)
+
+    dbDisconnect(myCursor, myDb)
+    return dumps({"requests": res})
+
+
+@APP.route("/admin/subjects/<u_id>", methods = ["GET"])
+@validateCaller
+def allSubjects(u_id):
+    myDb, myCursor = dbConnect()
+    res = getAllSubjects(myCursor)
+
+    dbDisconnect(myCursor, myDb)
+    return dumps({"subjects": res})
+
+
+@APP.route("/admin/rooms/<u_id>", methods = ["GET"])
+@validateCaller
+def allRooms(u_id):
+    myDb, myCursor = dbConnect()
+    res = getAllRooms(myCursor)
+
+    dbDisconnect(myCursor, myDb)
+    return dumps({"rooms": res})
+
+
 # * TUTORS ROUTES ==============================================================
-
-@APP.route("/tutors/uid", methods = ["GET"]) 
-def tutorsUid(u_id):
-
-    myDb, myCursor = dbConnect()
-
-    """
-    Retrieves the u_id of all tutors (ADMIN ONLY)
-
-    Returns:
-        dictionary of list of lists
-    """
-    res = getTutorsUid(myCursor)
-  
-    dbDisconnect(myCursor, myDb)
-    return dumps({"u_ids": res})
-
-
-@APP.route("/tutors/id", methods = ["GET"])
-def tutorsId():
-
-    myDb, myCursor = dbConnect()
-
-    """
-    Retrieves the tutor_id of all tutors
-
-    Returns:
-        dictionary of list of lists
-    """
-    res = getTutorsId(myCursor)
-
-    dbDisconnect(myCursor, myDb)
-    return dumps({"tutor_ids": res})
-    
-
-@APP.route("/tutors/email", methods = ["GET"])
-def tutorsEmail():
-
-    """
-    Retrieves the email of all tutors
-
-    Returns:
-        dictionary of list of lists
-    """
-
-    myDb, myCursor = dbConnect()
-    res = getTutorsEmail(myCursor)
-    
-    dbDisconnect(myCursor, myDb)
-    return dumps({"emails": res})
-
 
 @APP.route("/tutors/info", methods = ["GET"])
 def tutorsInfo():
@@ -348,6 +353,7 @@ def modifyTutorPayment():
     dbDisconnect(myCursor, myDb)
     return dumps({})
 
+
 @APP.route("/tutor/admin/<u_id>", methods = ["GET"])
 @validateCaller
 def checkTutorAdmin(u_id):
@@ -381,6 +387,7 @@ def classData():
 
 
 @APP.route("/class/add/<u_id>", methods = ["POST"])
+@validateCaller
 def classNew(u_id):
 
     """
@@ -440,6 +447,8 @@ def classRemove():
 
     myDb, myCursor = dbConnect()
     data = request.get_json()
+
+    print(data, "hello")
 
     RemoveClass(myCursor, myDb, data["class_id"])
     

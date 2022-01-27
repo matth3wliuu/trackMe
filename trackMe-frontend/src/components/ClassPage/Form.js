@@ -6,7 +6,7 @@ const Form = (props) => {
 
     return (
 
-        <form autoComplete = "off" {...other} style ={ {flexGrow: 1, padding: "10px"} }>
+        <form autoComplete = "off" { ...other } style = { {flexGrow: 1, padding: "10px"} }>
             
             { props.children }
 

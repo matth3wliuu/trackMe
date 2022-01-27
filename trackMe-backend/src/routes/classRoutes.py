@@ -23,11 +23,12 @@ def createNewClass(cursor, db, data):
         "grade": data["grade"], 
         "day": data["day"], 
         "start_time": data["start_time"],
-        "duration": data["duration"]
+        "duration": data["duration"],
+        "room": data["room"]
     }
     query = (
         "INSERT INTO classes "
-        "VALUES (%(class_id)s, %(tutor_id)s, %(subject_id)s, %(grade)s, %(day)s, %(start_time)s, %(duration)s ) "
+        "VALUES (%(class_id)s, %(tutor_id)s, %(subject_id)s, %(grade)s, %(day)s, %(start_time)s, %(duration)s, %(room)s) "
     )
     cursor.execute(query, class_data)
     db.commit()
@@ -179,9 +180,9 @@ def getClassStudents(cursor, classId):
     data = {
         "class_id": classId
     }
-    # make the query get names 
+    
     query = (
-        "SELECT student_id, first_name, last_name "
+        "SELECT student_id, first_name, last_name, grade "
         "FROM students "
         "WHERE student_id IN ( "
         "   SELECT student_id "

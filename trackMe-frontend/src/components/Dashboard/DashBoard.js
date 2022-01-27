@@ -5,21 +5,15 @@ import ClassCards from './ClassCards';
 import Content from './Content';
 
 const DashBoard = () => {
-
     return (
-
         <div className = "dashbord-container" >
-
             <DashProvider> 
-
                 <NavBar />
                 <ClassCards />
                 <Content />
-
             </DashProvider>
-           
         </div>
-    )
+    );
 }
 
 export default DashBoard;

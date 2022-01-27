@@ -8,15 +8,7 @@ const RequestTable = (props) => {
         { field: "requestType", headerName: "Type", width: 125, align: "center", headerAlign: "center" },
         { field: "requestDate", headerName: "Date", width: 125, align: "center", headerAlign: "center" },
         { field: "requestStatus", headerName: "Status", width: 125, align: "center", headerAlign: "center"}
-    ]
-
-    // const rows = props.students.map( student => {
-    //     return {
-    //         id: student[0],
-    //         firstName: student[1],
-    //         lastName: student[2]
-    //     }
-    // })
+    ];
 
     const rows = props.requests.map(request => {
         return {
@@ -26,7 +18,6 @@ const RequestTable = (props) => {
             requestStatus: request[3] 
         };
     })
-
 
     return (
         

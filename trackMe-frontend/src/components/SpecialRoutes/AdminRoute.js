@@ -3,7 +3,7 @@ import AuthContext from '../../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 import api from '../../api/config';
 
-export default function AdminRoute({ children }) {
+export default function AdminRoute( { children } ) {
 
     const { currUser } = useContext(AuthContext);
     const [adminPermission, setAdminPermission] = useState();
@@ -20,15 +20,15 @@ export default function AdminRoute({ children }) {
             catch (err) {
                 console.log(err.message);
                 setAdminPermission(false);
-            }
+            };
         };
         fetchData();
-        return () => controller.abort()
+        return () => controller.abort();
     }, [currUser]);
 
     if (adminPermission === undefined) return <p> Loading... </p>;
-    return adminPermission === true ? children : <Navigate to = "/" />    
-    
+    return adminPermission === true ? children : <Navigate to = "/" />;    
+
 };
 
 
