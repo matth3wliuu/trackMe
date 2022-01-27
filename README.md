@@ -1,5 +1,11 @@
 # trackMe (paused)
 
+
+![image](demo-front-page.png)
+Dashboard demo of trackMe
+
+
+
 ### Motivation:
 
 When I first started as a high school tutor at a small sized company, I found the experience of having to track my own hours and the work I have done to be really tedious. So, I came up with the idea for trackMe which aims to be an easy to use web application for improving employee experience. 
